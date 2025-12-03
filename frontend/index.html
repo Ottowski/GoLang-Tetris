@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Tetris Game</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tetris</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="layout" style="display:flex;align-items:flex-start;gap:12px;padding:12px;">
-        <div id="left" style="width:100px;">
-            <div style="font-family:sans-serif;margin-bottom:6px">Next</div>
-            <canvas id="preview" width="80" height="80" style="border:1px solid #333;background:#000;display:block"></canvas>
+    <div id="layout">
+        <div id="left">
+            <div class="label">Next</div>
+            <canvas id="preview" width="144" height="144"></canvas>
         </div>
         <div id="center">
-            <canvas id="tetris" width="600" height="800"></canvas>
+            <canvas id="tetris" width="360" height="720"></canvas>
         </div>
     </div>
-    <script type="module" src="app.js"></script>
+    <script type="module" src="./app.js"></script>
+    <noscript>Please enable JavaScript to play the game.</noscript>
 </body>
 </html>

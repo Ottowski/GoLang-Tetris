@@ -2,17 +2,21 @@
 export function createWS(url, onMessage, onOpen, onClose) {
     let ws = null;
     let available = false;
+    let reconnect = 1000;
 
     function start() {
         try {
             ws = new WebSocket(url);
         } catch (e) {
             available = false;
+            setTimeout(start, reconnect);
             return;
         }
 
         ws.addEventListener('open', () => {
             available = true;
+            reconnect = 1000;
+            console.log('WS connected', url);
             if (onOpen) onOpen();
         });
 
@@ -28,7 +32,9 @@ export function createWS(url, onMessage, onOpen, onClose) {
         ws.addEventListener('close', () => {
             available = false;
             if (onClose) onClose();
-            setTimeout(start, 1000);
+            try { ws.close(); } catch {}
+            setTimeout(start, reconnect);
+            reconnect = Math.min(5000, reconnect + 500);
         });
 
         ws.addEventListener('error', (err) => {
