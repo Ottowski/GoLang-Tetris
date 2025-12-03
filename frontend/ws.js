@@ -1,0 +1,52 @@
+// WebSocket helper (ES module)
+export function createWS(url, onMessage, onOpen, onClose) {
+    let ws = null;
+    let available = false;
+
+    function start() {
+        try {
+            ws = new WebSocket(url);
+        } catch (e) {
+            available = false;
+            return;
+        }
+
+        ws.addEventListener('open', () => {
+            available = true;
+            if (onOpen) onOpen();
+        });
+
+        ws.addEventListener('message', (evt) => {
+            try {
+                const state = JSON.parse(evt.data);
+                if (onMessage) onMessage(state);
+            } catch (e) {
+                console.error('invalid ws message', e);
+            }
+        });
+
+        ws.addEventListener('close', () => {
+            available = false;
+            if (onClose) onClose();
+            setTimeout(start, 1000);
+        });
+
+        ws.addEventListener('error', (err) => {
+            console.error('ws error', err);
+            available = false;
+            try { ws.close(); } catch {}
+        });
+    }
+
+    start();
+
+    return {
+        send(msg) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+            ws.send(JSON.stringify(msg));
+            return true;
+        },
+        isAvailable() { return available; },
+        close() { try { ws && ws.close(); } catch {} }
+    };
+}
