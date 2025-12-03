@@ -75,6 +75,7 @@ var tetrominoes = [][][]int{
 type Game struct {
 	Board    [][]int `json:"board"`
 	Piece    []int   `json:"piece"` // flattened 4x4
+	Next     [][]int `json:"next"`
 	PieceID  int     `json:"pieceId"`
 	X        int     `json:"x"`
 	Y        int     `json:"y"`
@@ -89,6 +90,12 @@ func newGame() *Game {
 		b[i] = make([]int, cols)
 	}
 	g := &Game{Board: b}
+	// initialize next queue (3 upcoming pieces)
+	g.Next = make([][]int, 0, 3)
+	for i := 0; i < 3; i++ {
+		id := rand.Intn(len(tetrominoes))
+		g.Next = append(g.Next, flatten(tetrominoes[id]))
+	}
 	g.spawn()
 	return g
 }
@@ -115,9 +122,33 @@ func rotatePiece(piece []int) []int {
 }
 
 func (g *Game) spawn() {
-	id := rand.Intn(len(tetrominoes))
-	g.Piece = flatten(tetrominoes[id])
-	g.PieceID = id + 1
+	// take first from Next queue
+	if len(g.Next) == 0 {
+		id := rand.Intn(len(tetrominoes))
+		g.Piece = flatten(tetrominoes[id])
+		g.PieceID = id + 1
+	} else {
+		g.Piece = make([]int, 16)
+		copy(g.Piece, g.Next[0])
+		// determine piece id from piece values (first non-zero value)
+		pid := 0
+		for _, v := range g.Piece {
+			if v != 0 {
+				pid = v
+				break
+			}
+		}
+		g.PieceID = pid
+		// shift queue
+		if len(g.Next) > 1 {
+			g.Next = append(g.Next[:0], g.Next[1:]...)
+		} else {
+			g.Next = g.Next[:0]
+		}
+		// append a new random piece to keep queue length
+		id := rand.Intn(len(tetrominoes))
+		g.Next = append(g.Next, flatten(tetrominoes[id]))
+	}
 	g.X = (cols / 2) - 2
 	g.Y = 0
 }
@@ -209,6 +240,7 @@ type wsMessage struct {
 type GameState struct {
 	Board    [][]int `json:"board"`
 	Piece    []int   `json:"piece"`
+	Next     [][]int `json:"next"`
 	PieceID  int     `json:"pieceId"`
 	X        int     `json:"x"`
 	Y        int     `json:"y"`
@@ -229,9 +261,21 @@ func snapshot(g *Game) GameState {
 	// copy piece
 	p := make([]int, len(g.Piece))
 	copy(p, g.Piece)
+	// copy next queue
+	n := make([][]int, len(g.Next))
+	for i := range g.Next {
+		if g.Next[i] == nil {
+			n[i] = nil
+			continue
+		}
+		pi := make([]int, len(g.Next[i]))
+		copy(pi, g.Next[i])
+		n[i] = pi
+	}
 	return GameState{
 		Board:    b,
 		Piece:    p,
+		Next:     n,
 		PieceID:  g.PieceID,
 		X:        g.X,
 		Y:        g.Y,
@@ -338,4 +382,4 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-// To run use: PS C:\Users\ottoa\OneDrive\Skrivbord\Go Tetris\backend> Set-Location -LiteralPath 'C:\Users\ottoa\OneDrive\Skrivbord\Go Tetris\backend'; go run .
+// To run use: Set-Location -LiteralPath 'C:\Users\ottoa\OneDrive\Skrivbord\Go Tetris\backend'; go run .
