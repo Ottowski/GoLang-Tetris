@@ -1,2 +1,2 @@
-To run game: Set-Location -LiteralPath 'C:\Users\ottoa\OneDrive\Skrivbord\Go Tetris\backend'; go mod tidy; go run .
+To run game: Set-Location -LiteralPath 'C:\Users\ottoa\OneDrive\Skrivbord\Go-Tetris\backend'; go mod tidy; go run .
 

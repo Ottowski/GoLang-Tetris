@@ -9,3 +9,4 @@ window.addEventListener('DOMContentLoaded', () => {
         console.error('failed to initialize UI', e);
     }
 });
+
