@@ -52,6 +52,10 @@ export function drawState(state) {
 
     // preview
     if (state.next && state.next.length > 0 && previewCtx) drawPreview(state.next[0]);
+    
+    // update score display
+    const scoreEl = document.getElementById('score');
+    if (scoreEl) scoreEl.textContent = state.score || 0;
 }
 
 export function drawCell(x, y, color) {

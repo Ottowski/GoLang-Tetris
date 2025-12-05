@@ -8,10 +8,19 @@
 </head>
 <body>
     <div id="layout">
+
+        <aside id="score-aside">
+            <div id="score-panel">
+                <div class="label">Score</div>
+                <div id="score" class="score-display">0</div>
+            </div>
+        </aside>
+
         <div id="left">
-            <div class="label">Next</div>
+            <div class="label">Next Block</div>
             <canvas id="preview" width="144" height="144"></canvas>
         </div>
+        
         <div id="center">
             <canvas id="tetris" width="360" height="720"></canvas>
         </div>

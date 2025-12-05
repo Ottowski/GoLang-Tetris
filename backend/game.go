@@ -132,7 +132,13 @@ func (g *Game) clearLines() {
 		newBoard = append([][]int{make([]int, cols)}, newBoard...)
 	}
 	g.Board = newBoard
-	g.Score += cleared * 100
+
+	// scoring: 100 per line, with multiplier for clearing multiple lines at once
+	if cleared > 0 {
+		baseScore := cleared * 100
+		multiplier := cleared // 1x for 1 line, 2x for 2 lines, etc.
+		g.Score += baseScore * multiplier
+	}
 }
 
 func (g *Game) step() {
