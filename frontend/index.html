@@ -25,6 +25,16 @@
             <canvas id="tetris" width="360" height="720"></canvas>
         </div>
     </div>
+
+    <!-- Game Over Modal (hidden by default) -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2>Game Over</h2>
+            <p id="finalScore">Score: 0</p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+    </div>
+
     <script type="module" src="./app.js"></script>
     <noscript>Please enable JavaScript to play the game.</noscript>
 </body>

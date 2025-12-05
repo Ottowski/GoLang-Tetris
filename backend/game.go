@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"math/rand"
 	"sync"
 )
@@ -35,6 +36,7 @@ func newGame() *Game {
 		g.Next = append(g.Next, flatten(tetrominoes[id]))
 	}
 	g.spawn()
+	log.Println("New game created. X:", g.X, "Y:", g.Y, "GameOver:", g.GameOver)
 	return g
 }
 

@@ -54,3 +54,58 @@ canvas {
     border: 1px solid #333;
     background: #000;
 }
+
+/* Game Over Modal */
+.modal {
+    display: none !important;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    background-color: transparent;
+}
+
+.modal.show {
+    display: block !important;
+}
+
+.modal-content {
+    background-color: #222;
+    border: 2px solid #0f0;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8);
+}
+
+.modal-content h2 {
+    margin: 0 0 20px 0;
+    font-size: 36px;
+    color: #0f0;
+}
+
+.modal-content p {
+    font-size: 24px;
+    color: #eee;
+    margin: 0 0 30px 0;
+}
+
+#restartBtn {
+    background-color: #0f0;
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#restartBtn:hover {
+    background-color: #0a0;
+}

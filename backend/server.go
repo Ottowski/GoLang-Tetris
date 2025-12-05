@@ -86,6 +86,9 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	// mutex to serialize websocket writes (gorilla/websocket requires this)
 	var writeMu sync.Mutex
 
+	// channel to signal game restart
+	restartChan := make(chan struct{})
+
 	// Read controls
 	go func() {
 		for {
@@ -94,9 +97,21 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				close(quit)
 				return
 			}
+
+			if msg.Type == "restart" {
+				log.Println("Restart message received")
+				// Signal restart on the channel (can restart anytime)
+				select {
+				case restartChan <- struct{}{}:
+				default:
+				}
+				continue
+			}
+
 			g.mutex.Lock()
 			if g.GameOver {
 				g.mutex.Unlock()
+				// Don't process other commands when game is over, but still listen
 				continue
 			}
 			switch msg.Type {
@@ -142,6 +157,13 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-quit:
 			return
+		case <-restartChan:
+			// Create a new game on restart
+			log.Println("Creating new game after restart")
+			g = newGame()
+			writeMu.Lock()
+			conn.WriteJSON(snapshot(g))
+			writeMu.Unlock()
 		case <-ticker.C:
 			g.step()
 			writeMu.Lock()
@@ -159,6 +181,12 @@ func main() {
 	fs := http.FileServer(http.Dir("../frontend"))
 	http.Handle("/", fs)
 	http.HandleFunc("/ws", wsHandler)
+	http.HandleFunc("/restart", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"status":"ok"}`))
+		}
+	})
 
 	log.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

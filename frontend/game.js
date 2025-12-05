@@ -56,6 +56,20 @@ export function drawState(state) {
     // update score display
     const scoreEl = document.getElementById('score');
     if (scoreEl) scoreEl.textContent = state.score || 0;
+
+    // handle game over modal
+    const modal = document.getElementById('gameOverModal');
+    if (modal) {
+        console.log('Game state - gameOver:', state.gameOver, 'score:', state.score);
+        if (state.gameOver) {
+            console.log('Game Over triggered!');
+            const finalScoreEl = document.getElementById('finalScore');
+            if (finalScoreEl) finalScoreEl.textContent = `Score: ${state.score || 0}`;
+            modal.classList.add('show');
+        } else {
+            modal.classList.remove('show');
+        }
+    }
 }
 
 export function drawCell(x, y, color) {
