@@ -75,6 +75,7 @@ export function colorFor(v) {
         case 7: return '#f08000';
         case 8: return '#ff69b4';
         case 9: return '#ffd700';
+        case 10: return '#ff0000';
         default: return '#666';
     }
 }
