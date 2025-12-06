@@ -9,10 +9,17 @@ export default function initUI() {
     const wsUrl = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/ws';
     let lastScore = 0;
     let wasGameOver = false;
+    let lastPieceID = null;
 
     const socket = createWS(wsUrl, (state) => {
         // incoming snapshot from server
         drawState(state);
+
+        // Detect block placement (piece changed, meaning last piece locked)
+        if (lastPieceID !== null && state.pieceId !== lastPieceID) {
+            soundManager.playBlockPlace();
+        }
+        lastPieceID = state.pieceId;
 
         // Detect line clear (score increased)
         if (state.score > lastScore) {
