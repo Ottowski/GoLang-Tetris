@@ -1,39 +1,6 @@
 import { createWS } from './ws.js';
 import { initCanvas, drawState } from './game.js';
-
-// Sound effects using Web Audio API
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function playSound(freq, duration = 0.1, type = 'sine') {
-    try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.frequency.value = freq;
-        osc.type = type;
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + duration);
-    } catch (e) {
-        // Audio context not available
-    }
-}
-
-export function soundBlockPlace() {
-    playSound(400, 0.05);
-}
-
-export function soundLineClear() {
-    playSound(600, 0.1);
-    playSound(800, 0.1, 'square');
-}
-
-export function soundGameOver() {
-    playSound(200, 0.3);
-    playSound(150, 0.3);
-}
+import { soundManager } from './sounds.js';
 
 export default function initUI() {
     initCanvas('tetris', 'preview', 36);
@@ -49,13 +16,13 @@ export default function initUI() {
 
         // Detect line clear (score increased)
         if (state.score > lastScore) {
-            soundLineClear();
+            soundManager.playLineClear();
             lastScore = state.score;
         }
 
         // Detect game over transition
         if (state.gameOver && !wasGameOver) {
-            soundGameOver();
+            soundManager.playGameOver();
             wasGameOver = true;
         } else if (!state.gameOver) {
             wasGameOver = false;
