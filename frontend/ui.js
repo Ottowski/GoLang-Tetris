@@ -34,6 +34,12 @@ export default function initUI() {
         } else if (!state.gameOver) {
             wasGameOver = false;
         }
+        if (state.paused) {
+            console.log("Game paused");
+        } else {
+            console.log("Game resumed");
+        }
+        
     }, () => {
         console.log('ws open');
     }, () => {
@@ -69,6 +75,8 @@ export default function initUI() {
         else if (ev.key === 'w' || ev.key === 'W') msg = { type: 'rotate' };
         // space to drop
         else if (ev.code === 'Space') msg = { type: 'drop' };
+        // pausing game
+        else if (ev.key === 'p' || ev.key === 'P') msg = { type: 'pause/resume' };
         if (!msg) return;
         ev.preventDefault();
         if (socket.isAvailable()) socket.send(msg);

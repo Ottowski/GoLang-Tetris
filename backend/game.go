@@ -20,7 +20,28 @@ type Game struct {
 	Y        int     `json:"y"`
 	Score    int     `json:"score"`
 	GameOver bool    `json:"gameOver"`
+	Paused   bool    `json:"paused"`
 	mutex    sync.Mutex
+}
+
+func (g *Game) step() {
+	g.mutex.Lock()
+	defer g.mutex.Unlock()
+
+	if g.GameOver {
+		return
+	}
+
+	// pause stopps game progression
+	if g.Paused {
+		return
+	}
+
+	if !g.collides(g.X, g.Y+1, g.Piece) {
+		g.Y++
+	} else {
+		g.lock()
+	}
 }
 
 func newGame() *Game {
@@ -125,33 +146,21 @@ func (g *Game) clearLines() {
 			}
 		}
 		if !full {
-			newBoard = append(newBoard, g.Board[y])
+			rowCopy := make([]int, cols)
+			copy(rowCopy, g.Board[y])
+			newBoard = append(newBoard, rowCopy)
 		} else {
 			cleared++
 		}
 	}
 	for i := 0; i < cleared; i++ {
-		newBoard = append([][]int{make([]int, cols)}, newBoard...)
+		newRow := make([]int, cols)
+		newBoard = append([][]int{newRow}, newBoard...)
 	}
 	g.Board = newBoard
-
-	// scoring: 100 per line, with multiplier for clearing multiple lines at once
 	if cleared > 0 {
 		baseScore := cleared * 100
-		multiplier := cleared // 1x for 1 line, 2x for 2 lines, etc.
+		multiplier := cleared
 		g.Score += baseScore * multiplier
-	}
-}
-
-func (g *Game) step() {
-	g.mutex.Lock()
-	defer g.mutex.Unlock()
-	if g.GameOver {
-		return
-	}
-	if !g.collides(g.X, g.Y+1, g.Piece) {
-		g.Y++
-	} else {
-		g.lock()
 	}
 }

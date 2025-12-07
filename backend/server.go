@@ -28,6 +28,7 @@ type GameState struct {
 	Y        int     `json:"y"`
 	Score    int     `json:"score"`
 	GameOver bool    `json:"gameOver"`
+	Paused   bool    `json:"paused"`
 }
 
 func snapshot(g *Game) GameState {
@@ -63,6 +64,7 @@ func snapshot(g *Game) GameState {
 		Y:        g.Y,
 		Score:    g.Score,
 		GameOver: g.GameOver,
+		Paused:   g.Paused,
 	}
 }
 
@@ -100,7 +102,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 			if msg.Type == "restart" {
 				log.Println("Restart message received")
-				// Signal restart on the channel (can restart anytime)
+				// Signal restart
 				select {
 				case restartChan <- struct{}{}:
 				default:
@@ -111,40 +113,49 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			g.mutex.Lock()
 			if g.GameOver {
 				g.mutex.Unlock()
-				// Don't process other commands when game is over, but still listen
 				continue
 			}
+
+			// State of game signals
+			updated := false
+
 			switch msg.Type {
 			case "move":
-				if msg.Dir == "left" {
-					if !g.collides(g.X-1, g.Y, g.Piece) {
-						g.X--
-					}
-				} else if msg.Dir == "right" {
-					if !g.collides(g.X+1, g.Y, g.Piece) {
-						g.X++
-					}
-				} else if msg.Dir == "down" {
-					if !g.collides(g.X, g.Y+1, g.Piece) {
-						g.Y++
-					}
+				if msg.Dir == "left" && !g.collides(g.X-1, g.Y, g.Piece) {
+					g.X--
+				} else if msg.Dir == "right" && !g.collides(g.X+1, g.Y, g.Piece) {
+					g.X++
+				} else if msg.Dir == "down" && !g.collides(g.X, g.Y+1, g.Piece) {
+					g.Y++
 				}
+				updated = true
+
 			case "rotate":
 				rotated := rotatePiece(g.Piece)
 				if !g.collides(g.X, g.Y, rotated) {
 					g.Piece = rotated
 				}
+				updated = true
+
 			case "drop":
 				for !g.collides(g.X, g.Y+1, g.Piece) {
 					g.Y++
 				}
 				g.lock()
+				updated = true
+
+			case "pause/resume":
+				g.Paused = !g.Paused
+				updated = true
 			}
+
 			g.mutex.Unlock()
-			// send update after processing control (use snapshot and serialize writes)
-			writeMu.Lock()
-			conn.WriteJSON(snapshot(g))
-			writeMu.Unlock()
+
+			if updated {
+				writeMu.Lock()
+				conn.WriteJSON(snapshot(g))
+				writeMu.Unlock()
+			}
 		}
 	}()
 
