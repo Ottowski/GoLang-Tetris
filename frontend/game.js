@@ -70,6 +70,16 @@ export function drawState(state) {
             modal.classList.remove('show');
         }
     }
+    // handle pause modal
+    const pauseModal = document.getElementById('pauseModal');
+    if (pauseModal) {
+    if (state.paused) {
+        pauseModal.classList.add('show');
+    } else {
+        pauseModal.classList.remove('show');
+    }
+}
+
 }
 
 export function drawCell(x, y, color) {
