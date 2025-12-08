@@ -4,6 +4,7 @@ export let cellSize = 36;
 const COLS = 10;
 const ROWS = 20;
 
+// initialize canvases
 export function initCanvas(mainId = 'tetris', previewId = 'preview', size = 36) {
     cellSize = size;
     canvas = document.getElementById(mainId);
@@ -18,12 +19,57 @@ export function initCanvas(mainId = 'tetris', previewId = 'preview', size = 36) 
     if (previewCanvas) previewCtx = previewCanvas.getContext('2d');
 }
 
+// clear the main canvas
 export function clear() {
     if (!ctx) return;
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+
+// Ghost piece rendering
+function drawGhostPiece(state) {
+    if (!ctx || !state.piece) return;
+
+    // ghost Y-position
+    let gy = state.y;
+    while (!collides(state.board, state.piece, state.x, gy + 1)) {
+        gy++;
+    }
+
+    // draw ghost block
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+            const v = state.piece[y * 4 + x];
+            if (v) {
+                drawGhostCell(state.x + x, gy + y, v);
+            }
+        }
+    }
+}
+// draw a ghost cell
+function drawGhostCell(x, y, v) {
+    ctx.fillStyle = colorFor(v) + "25"; // how trasparent %
+    ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+}
+
+// helper to check collisions
+function collides(board, piece, px, py) {
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+            const val = piece[y * 4 + x];
+            if (val === 0) continue;
+            const bx = px + x;
+            const by = py + y;
+            if (bx < 0 || bx >= COLS || by < 0 || by >= ROWS) return true;
+            if (board[by][bx] !== 0) return true;
+        }
+    }
+    return false;
+}
+
+
+// Main drawing function
 export function drawState(state) {
     if (!state) return;
     if (!ctx) return;
@@ -40,6 +86,7 @@ export function drawState(state) {
     }
 
     // overlay falling piece
+    drawGhostPiece(state);
     const piece = state.piece || [];
     const px = Number.isFinite(state.x) ? state.x : 0;
     const py = Number.isFinite(state.y) ? state.y : 0;
@@ -70,24 +117,25 @@ export function drawState(state) {
             modal.classList.remove('show');
         }
     }
-    // handle pause modal
+    // in my addition, handle pause modal
     const pauseModal = document.getElementById('pauseModal');
-    if (pauseModal) {
     if (state.paused) {
-        pauseModal.classList.add('show');
-    } else {
-        pauseModal.classList.remove('show');
-    }
-}
+    console.log("Game paused");
+    if (pauseModal) pauseModal.classList.add('show');} 
+    else {
+    console.log("Game resumed");
+    if (pauseModal) pauseModal.classList.remove('show');}
 
 }
 
+// draw a single cell
 export function drawCell(x, y, color) {
     if (!ctx) return;
     ctx.fillStyle = color;
     ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
 }
 
+// color mapping
 export function colorFor(v) {
     switch (v) {
         case 1: return '#00f0f0';
@@ -106,6 +154,8 @@ export function colorFor(v) {
     }
 }
 
+
+// Preview drawing
 function drawPreview(flatPiece) {
     if (!previewCtx || !flatPiece) return;
     previewCtx.fillStyle = '#000';

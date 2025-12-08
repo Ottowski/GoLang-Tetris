@@ -131,8 +131,8 @@ canvas {
     width: 100vw;
     height: 100vh;
 
-    background: rgba(0, 0, 0, 0.3); /* lätt mörkläggning */
-    z-index: 9000; /* lägre än game over */
+    background: rgba(0, 0, 0, 0.3); /* semi-transparent overlay */
+    z-index: 9000; /* below game over modal*/
 }
 
 #pauseModal .modal-content {
@@ -142,7 +142,7 @@ canvas {
     padding: 20px 35px;
     text-align: center;
 
-    backdrop-filter: blur(3px); /* snygg effekt */
+    backdrop-filter: blur(3px); 
 }
 
 #pauseModal .modal-content h2 {
