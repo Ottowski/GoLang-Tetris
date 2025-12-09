@@ -68,6 +68,23 @@ function collides(board, piece, px, py) {
     return false;
 }
 
+export function checkHighscore(score) {
+    const modal = document.getElementById("highscoreModal");
+    const scoreEl = document.getElementById("hsScore");
+
+    if (!modal || !scoreEl) return;
+
+    // check if highscore worthy
+    fetch('/highscores')
+        .then(res => res.json())
+        .then(list => {
+            const lowest = list.length >= 10 ? list[list.length - 1].score : -Infinity;
+            if (score > lowest) {
+                scoreEl.textContent = "Your Score: " + score;
+                modal.classList.add("show");
+            }
+        });
+}
 
 // Main drawing function
 export function drawState(state) {
@@ -110,6 +127,8 @@ export function drawState(state) {
         console.log('Game state - gameOver:', state.gameOver, 'score:', state.score);
         if (state.gameOver) {
             console.log('Game Over triggered!');
+            // open highscore modal if score qualifies
+            checkHighscore(state.score);
             const finalScoreEl = document.getElementById('finalScore');
             if (finalScoreEl) finalScoreEl.textContent = `Score: ${state.score || 0}`;
             modal.classList.add('show');
@@ -171,5 +190,48 @@ function drawPreview(flatPiece) {
                 previewCtx.fillRect(startX + x * cell, startY + y * cell, cell - 1, cell - 1);
             }
         }
+    }
+}
+
+// hämta highscores från servern och rendera
+export async function fetchHighscores() {
+    try {
+        const res = await fetch('/highscores');
+        if (!res.ok) return [];
+        const hs = await res.json();
+        renderHighscores(hs);
+        return hs;
+    } catch (e) {
+        console.warn('fetchHighscores failed', e);
+        return [];
+    }
+}
+
+export function renderHighscores(list) {
+    const el = document.getElementById('highscores-list');
+    if (!el) return;
+    el.innerHTML = '';
+    (list || []).forEach((entry) => {
+        const li = document.createElement('li');
+        const when = new Date(entry.when).toLocaleDateString();
+        li.textContent = `${entry.name} — ${entry.score}`;
+        el.appendChild(li);
+    });
+}
+
+// skicka highscore
+export async function submitHighscore(name, score) {
+    try {
+        const res = await fetch('/highscores', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name, score })
+        });
+        if (!res.ok) throw new Error('failed');
+        await fetchHighscores(); // uppdatera listan
+        return true;
+    } catch (e) {
+        console.warn('submitHighscore failed', e);
+        return false;
     }
 }

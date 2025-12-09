@@ -12,16 +12,17 @@ const (
 )
 
 type Game struct {
-	Board    [][]int `json:"board"`
-	Piece    []int   `json:"piece"` // flattened 4x4
-	Next     [][]int `json:"next"`
-	PieceID  int     `json:"pieceId"`
-	X        int     `json:"x"`
-	Y        int     `json:"y"`
-	Score    int     `json:"score"`
-	GameOver bool    `json:"gameOver"`
-	Paused   bool    `json:"paused"`
-	mutex    sync.Mutex
+	Board     [][]int `json:"board"`
+	Piece     []int   `json:"piece"` // flattened 4x4
+	Next      [][]int `json:"next"`
+	PieceID   int     `json:"pieceId"`
+	X         int     `json:"x"`
+	Y         int     `json:"y"`
+	Score     int     `json:"score"`
+	GameOver  bool    `json:"gameOver"`
+	Paused    bool    `json:"paused"`
+	HighScore int     `json:"Highscore"`
+	mutex     sync.Mutex
 }
 
 func (g *Game) step() {
