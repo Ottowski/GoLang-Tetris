@@ -107,10 +107,10 @@ export default function initUI() {
     }, 100);
 
     // initial highscores load
-fetchHighscores();
+    fetchHighscores();
 
-// hookup submit button in game over modal
-setTimeout(() => {
+    // hookup submit button in game over modal
+    setTimeout(() => {
     const submitBtn = document.getElementById('submitHighscoreBtn');
     const nameInput = document.getElementById('playerName');
     const finalScoreEl = document.getElementById('finalScore');
@@ -124,7 +124,7 @@ setTimeout(() => {
         document.getElementById("highscoreModal").classList.remove("show");
         fetchHighscores();
     }
-});
+    });
 
     if (submitBtn && nameInput && finalScoreEl) {
         submitBtn.addEventListener('click', async () => {
@@ -137,7 +137,6 @@ setTimeout(() => {
             const ok = await submitHighscore(name, score);
             if (ok) {
                 nameInput.value = '';
-                // valfritt: disable knappen eller visa tack
                 submitBtn.textContent = 'Submitted';
                 setTimeout(() => {
                     submitBtn.disabled = false;
@@ -148,7 +147,6 @@ setTimeout(() => {
                 alert('Could not submit score. Try again.');
             }
         });
-    }
-}, 200);
+    }}, 200);
 
 }

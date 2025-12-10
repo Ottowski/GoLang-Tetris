@@ -193,7 +193,7 @@ function drawPreview(flatPiece) {
     }
 }
 
-// hämta highscores från servern och rendera
+// fetch highscores from server 
 export async function fetchHighscores() {
     try {
         const res = await fetch('/highscores');
@@ -219,7 +219,7 @@ export function renderHighscores(list) {
     });
 }
 
-// skicka highscore
+// send highscore
 export async function submitHighscore(name, score) {
     try {
         const res = await fetch('/highscores', {
@@ -228,7 +228,7 @@ export async function submitHighscore(name, score) {
             body: JSON.stringify({ name, score })
         });
         if (!res.ok) throw new Error('failed');
-        await fetchHighscores(); // uppdatera listan
+        await fetchHighscores(); // update list
         return true;
     } catch (e) {
         console.warn('submitHighscore failed', e);
