@@ -1,6 +1,7 @@
 import { createWS } from './ws.js';
-import { initCanvas, drawState, fetchHighscores, submitHighscore  } from './game.js';
+import { initCanvas, drawState } from './game.js';
 import { soundManager } from './sounds.js';
+import { fetchHighscores, submitHighscore  } from '/highscore.js';
 
 export default function initUI() {
     initCanvas('tetris', 'preview', 36);
@@ -81,7 +82,6 @@ export default function initUI() {
         ev.preventDefault();
         if (socket.isAvailable()) socket.send(msg);
     });
-
     // restart button - setup with a small delay to ensure DOM is ready
     setTimeout(() => {
         console.log('Setting up restart button');
@@ -105,13 +105,10 @@ export default function initUI() {
             });
         }
     }, 100);
-
     // initial highscores load
     fetchHighscores();
-
     // hookup submit button in game over modal
-    // hookup submit button in game over modal
-setTimeout(() => {
+    setTimeout(() => {
     const submitBtn = document.getElementById('submitHighscoreBtn');
     const nameInput = document.getElementById('playerName');
     const finalScoreEl = document.getElementById('finalScore');
@@ -141,5 +138,5 @@ setTimeout(() => {
             alert('Could not submit score. Try again.');
         }
     });
-}, 200);
+    }, 200);
 }

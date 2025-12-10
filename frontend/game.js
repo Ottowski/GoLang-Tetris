@@ -68,24 +68,6 @@ function collides(board, piece, px, py) {
     return false;
 }
 
-export function checkHighscore(score) {
-    const modal = document.getElementById("highscoreModal");
-    const scoreEl = document.getElementById("hsScore");
-
-    if (!modal || !scoreEl) return;
-
-    // check if highscore worthy
-    fetch('/highscores')
-        .then(res => res.json())
-        .then(list => {
-            const lowest = list.length >= 10 ? list[list.length - 1].score : -Infinity;
-            if (score > lowest) {
-                scoreEl.textContent = "Your Score: " + score;
-                modal.classList.add("show");
-            }
-        });
-}
-
 // Main drawing function
 export function drawState(state) {
     if (!state) return;
@@ -146,7 +128,6 @@ export function drawState(state) {
     if (pauseModal) pauseModal.classList.remove('show');}
 
 }
-
 // draw a single cell
 export function drawCell(x, y, color) {
     if (!ctx) return;
@@ -165,10 +146,10 @@ export function colorFor(v) {
         case 6: return '#0000f0';
         case 7: return '#f08000';
         case 8: return '#ff69b4';
-        case 9: return '#ffd700';
-        case 10: return '#ff4500';   
-        case 11: return '#ffffffff';   
-        case 12: return '#720e6aff';   
+        case 9: return '#00f000';
+        case 10: return '#f0f000';   
+        case 11: return '#0000f0';   
+        case 12: return '#f00000';   
         default: return '#666';       
     }
 }
@@ -190,48 +171,5 @@ function drawPreview(flatPiece) {
                 previewCtx.fillRect(startX + x * cell, startY + y * cell, cell - 1, cell - 1);
             }
         }
-    }
-}
-
-// fetch highscores from server 
-export async function fetchHighscores() {
-    try {
-        const res = await fetch('/highscores');
-        if (!res.ok) return [];
-        const hs = await res.json();
-        renderHighscores(hs);
-        return hs;
-    } catch (e) {
-        console.warn('fetchHighscores failed', e);
-        return [];
-    }
-}
-
-export function renderHighscores(list) {
-    const el = document.getElementById('highscores-list');
-    if (!el) return;
-    el.innerHTML = '';
-    (list || []).forEach((entry) => {
-        const li = document.createElement('li');
-        const when = new Date(entry.when).toLocaleDateString();
-        li.textContent = `${entry.name} — ${entry.score}`;
-        el.appendChild(li);
-    });
-}
-
-// send highscore
-export async function submitHighscore(name, score) {
-    try {
-        const res = await fetch('/highscores', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name, score })
-        });
-        if (!res.ok) throw new Error('failed');
-        await fetchHighscores(); // update list
-        return true;
-    } catch (e) {
-        console.warn('submitHighscore failed', e);
-        return false;
     }
 }
