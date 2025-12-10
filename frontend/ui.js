@@ -110,43 +110,36 @@ export default function initUI() {
     fetchHighscores();
 
     // hookup submit button in game over modal
-    setTimeout(() => {
+    // hookup submit button in game over modal
+setTimeout(() => {
     const submitBtn = document.getElementById('submitHighscoreBtn');
     const nameInput = document.getElementById('playerName');
     const finalScoreEl = document.getElementById('finalScore');
 
+    if (!submitBtn || !nameInput || !finalScoreEl) return;
+
     submitBtn.addEventListener('click', async () => {
-    const name = nameInput.value.trim() || "Anonymous";
-    const score = parseInt(finalScoreEl.textContent.match(/\d+/)[0]);
+        const name = nameInput.value.trim() || 'Anonymous';
+        const scoreText = finalScoreEl.textContent || '';
+        const m = scoreText.match(/(\d+)/);
+        const score = m ? parseInt(m[1], 10) : 0;
 
-    const ok = await submitHighscore(name, score);
-    if (ok) {
-        document.getElementById("highscoreModal").classList.remove("show");
-        fetchHighscores();
-    }
-    });
+        submitBtn.disabled = true;
 
-    if (submitBtn && nameInput && finalScoreEl) {
-        submitBtn.addEventListener('click', async () => {
-            const name = nameInput.value.trim() || 'Anonymous';
-            const scoreText = finalScoreEl.textContent || '';
-            // assuming finalScore text is "Score: X"
-            const m = scoreText.match(/(\d+)/);
-            const score = m ? parseInt(m[1], 10) : 0;
-            submitBtn.disabled = true;
-            const ok = await submitHighscore(name, score);
-            if (ok) {
-                nameInput.value = '';
-                submitBtn.textContent = 'Submitted';
-                setTimeout(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Submit Score';
-                }, 1500);
-            } else {
+        const ok = await submitHighscore(name, score);
+        if (ok) {
+            nameInput.value = '';
+            submitBtn.textContent = 'Submitted';
+            document.getElementById("highscoreModal").classList.remove("show");
+            fetchHighscores();
+            setTimeout(() => {
                 submitBtn.disabled = false;
-                alert('Could not submit score. Try again.');
-            }
-        });
-    }}, 200);
-
+                submitBtn.textContent = 'Submit Score';
+            }, 1500);
+        } else {
+            submitBtn.disabled = false;
+            alert('Could not submit score. Try again.');
+        }
+    });
+}, 200);
 }
