@@ -42,19 +42,15 @@ export async function submitHighscore(name, score) {
 }
 
 export function checkHighscore(score) {
-    const modal = document.getElementById("highscoreModal");
-    const scoreEl = document.getElementById("hsScore");
-
-    if (!modal || !scoreEl) return;
-
-    // check if highscore worthy
-    fetch('/highscores')
-        .then(res => res.json())
-        .then(list => {
-            const lowest = list.length >= 10 ? list[list.length - 1].score : -Infinity;
-            if (score > lowest) {
-                scoreEl.textContent = "Your Score: " + score;
-                modal.classList.add("show");
-            }
-        });
+    // compare to list in localStorage
+    const highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+    // check if highscore worthy (empty or higher than the lowest in the list) 
+    const qualifies =
+        highscores.length < 10 ||
+        score > highscores[highscores.length - 1].score;
+    if (qualifies) {
+        document.getElementById("highscoreModal").classList.add("show");
+        return true;
+    }
+    return false; 
 }

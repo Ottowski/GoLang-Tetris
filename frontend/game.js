@@ -1,4 +1,3 @@
-import { checkHighscore } from '/highscore.js';
 // Rendering and game drawing utilities (ES module) — simplified and robust
 let canvas, ctx, previewCanvas, previewCtx;
 export let cellSize = 36;
@@ -69,7 +68,7 @@ function collides(board, piece, px, py) {
     return false;
 }
 
-// Main drawing function
+// Main drawing function for the whole game takes place in order
 export function drawState(state) {
     if (!state) return;
     if (!ctx) return;
@@ -97,34 +96,14 @@ export function drawState(state) {
         }
     }
 
-    // preview
+    // preview for block piece
     if (state.next && state.next.length > 0 && previewCtx) drawPreview(state.next[0]);
     
     // update score display
     const scoreEl = document.getElementById('score');
     if (scoreEl) scoreEl.textContent = state.score || 0;
 
-    // handle game over modal
-    const modal = document.getElementById('gameOverModal');
-    if (modal) {
-        console.log('Game state - gameOver:', state.gameOver, 'score:', state.score);
-        if (state.gameOver) {
-            console.log('Game Over triggered!');
-            // open highscore modal if score qualifies
-            try {
-                checkHighscore(state.score);
-            } catch (e) {
-                console.error('checkHighscore failed:', e);
-            }
-            const finalScoreEl = document.getElementById('finalScore');
-            if (finalScoreEl) finalScoreEl.textContent = `Score: ${state.score || 0}`;
-            modal.classList.add('show');
-        } else {
-            modal.classList.remove('show');
-        }
-    }
-
-    // in my addition, handle pause modal
+    // handle pause modal
     const pauseModal = document.getElementById('pauseModal');
     if (state.paused) {
     console.log("Game paused");

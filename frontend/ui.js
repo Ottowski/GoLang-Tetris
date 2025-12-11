@@ -4,6 +4,44 @@ import { soundManager } from './sounds.js';
 import { fetchHighscores, submitHighscore, checkHighscore } from '/highscore.js';
 
 export default function initUI() {
+    // hookup submit button before game over modal
+    setTimeout(() => {
+    const submitBtn = document.getElementById('submitHighscoreBtn');
+    const nameInput = document.getElementById('playerName');
+    const finalScoreEl = document.getElementById('finalScore');
+
+    if (!submitBtn || !nameInput || !finalScoreEl) return;
+    submitBtn.addEventListener('click', async () => {
+        const name = nameInput.value.trim() || 'Anonymous';
+        const scoreText = finalScoreEl.textContent || '';
+        const m = scoreText.match(/(\d+)/);
+        const score = m ? parseInt(m[1], 10) : 0;
+        const ok = await submitHighscore(name, score);
+        submitBtn.disabled = true;
+        const gameOverModal = document.getElementById("gameOverModal");
+        if (ok) {
+            document.getElementById("highscoreModal").classList.remove("show");
+            // when Game Over-modal is shown
+            if (gameOverModal) {
+                gameOverModal.classList.add("show");
+            }
+        }
+        if (ok) {
+            nameInput.value = '';
+            submitBtn.textContent = 'Submitted';
+            document.getElementById("highscoreModal").classList.remove("show");
+            fetchHighscores();
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Score';
+            }, 1500);
+        } else {
+            submitBtn.disabled = false;
+            alert('Could not submit score. Try again.');
+        }
+    });
+    }, 200);
+
     initCanvas('tetris', 'preview', 36);
     console.log('initUI called');
 
@@ -15,13 +53,11 @@ export default function initUI() {
     const socket = createWS(wsUrl, (state) => {
         // incoming snapshot from server
         drawState(state);
-
         // Detect block placement (piece changed, meaning last piece locked)
         if (lastPieceID !== null && state.pieceId !== lastPieceID) {
             soundManager.playBlockPlace();
         }
         lastPieceID = state.pieceId;
-
         // Detect line clear (score increased)
         if (state.score > lastScore) {
             soundManager.playLineClear();
@@ -30,24 +66,28 @@ export default function initUI() {
         // Detect game over transition
         if (state.gameOver && !wasGameOver) {
             soundManager.playGameOver();
+            // place wasGameOver directly after sound to avoid multiple triggers
             wasGameOver = true;
-            // check if score is a new highscore
-            checkHighscore(state.score);
             // also display final score for the submit modal
             const finalScoreEl = document.getElementById("finalScore");
-        if (finalScoreEl) {
-            finalScoreEl.textContent = "Score: " + state.score;
-        }
+            if (finalScoreEl) { finalScoreEl.textContent = "Score: " + state.score;}
+            // check if score is a new highscore
+            const isHighscore = checkHighscore(state.score);
+            // if its not highscore, show gameover modal directly
+            if (!isHighscore) {
+                const modal = document.getElementById('gameOverModal');
+                if (modal) modal.classList.add('show');
+            }
         } else if (!state.gameOver) {
-        wasGameOver = false;
+            // reset when game restarts
+            wasGameOver = false;
         }
         // Detect if game paused
         if (state.paused) {
             console.log("Game paused");
         } else {
             console.log("Game resumed");
-        }
-        
+        }      
     }, () => {
         console.log('ws open');
     }, () => {
@@ -89,6 +129,7 @@ export default function initUI() {
         ev.preventDefault();
         if (socket.isAvailable()) socket.send(msg);
     });
+
     // restart button - setup with a small delay to ensure DOM is ready
     setTimeout(() => {
         console.log('Setting up restart button');
@@ -96,15 +137,12 @@ export default function initUI() {
         console.log('Restart button found:', !!restartBtn);
         if (restartBtn) {
             restartBtn.addEventListener('click', () => {
-                console.log('Restart button clicked!');
-                const modal = document.getElementById('gameOverModal');
-                if (modal) {
-                    console.log('Removing .show class from modal');
-                    modal.classList.remove('show');
-                }
-                lastScore = 0;
+               const gameOverModal = document.getElementById('gameOverModal');
+               const highscoreModal = document.getElementById('highscoreModal');
+               if (gameOverModal) gameOverModal.classList.remove('show');
+               if (highscoreModal) highscoreModal.classList.remove('show');
                 wasGameOver = false;
-                
+                lastScore = 0;
                 // Send restart command to server
                 console.log('Socket available:', socket.isAvailable());
                 const sent = socket.send({ type: 'restart' });
@@ -114,36 +152,4 @@ export default function initUI() {
     }, 100);
     // initial highscores load
     fetchHighscores();
-    // hookup submit button in game over modal
-    setTimeout(() => {
-    const submitBtn = document.getElementById('submitHighscoreBtn');
-    const nameInput = document.getElementById('playerName');
-    const finalScoreEl = document.getElementById('finalScore');
-
-    if (!submitBtn || !nameInput || !finalScoreEl) return;
-
-    submitBtn.addEventListener('click', async () => {
-        const name = nameInput.value.trim() || 'Anonymous';
-        const scoreText = finalScoreEl.textContent || '';
-        const m = scoreText.match(/(\d+)/);
-        const score = m ? parseInt(m[1], 10) : 0;
-
-        submitBtn.disabled = true;
-
-        const ok = await submitHighscore(name, score);
-        if (ok) {
-            nameInput.value = '';
-            submitBtn.textContent = 'Submitted';
-            document.getElementById("highscoreModal").classList.remove("show");
-            fetchHighscores();
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Score';
-            }, 1500);
-        } else {
-            submitBtn.disabled = false;
-            alert('Could not submit score. Try again.');
-        }
-    });
-    }, 200);
 }
