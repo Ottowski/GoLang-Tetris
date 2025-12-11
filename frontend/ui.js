@@ -1,7 +1,7 @@
 import { createWS } from './ws.js';
 import { initCanvas, drawState } from './game.js';
 import { soundManager } from './sounds.js';
-import { fetchHighscores, submitHighscore  } from '/highscore.js';
+import { fetchHighscores, submitHighscore, checkHighscore } from '/highscore.js';
 
 export default function initUI() {
     initCanvas('tetris', 'preview', 36);
@@ -27,14 +27,21 @@ export default function initUI() {
             soundManager.playLineClear();
             lastScore = state.score;
         }
-
         // Detect game over transition
         if (state.gameOver && !wasGameOver) {
             soundManager.playGameOver();
             wasGameOver = true;
-        } else if (!state.gameOver) {
-            wasGameOver = false;
+            // check if score is a new highscore
+            checkHighscore(state.score);
+            // also display final score for the submit modal
+            const finalScoreEl = document.getElementById("finalScore");
+        if (finalScoreEl) {
+            finalScoreEl.textContent = "Score: " + state.score;
         }
+        } else if (!state.gameOver) {
+        wasGameOver = false;
+        }
+        // Detect if game paused
         if (state.paused) {
             console.log("Game paused");
         } else {

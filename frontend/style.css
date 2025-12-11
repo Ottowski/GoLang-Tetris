@@ -1,3 +1,4 @@
+/* Main Modal design */
 body {
     display: flex;
     justify-content: center;
@@ -156,6 +157,8 @@ canvas {
     color: #ccc;
 }
 
+
+/* Highscore Modal */
 #highscore-container {
     margin-top: 20px;
     padding: 10px;

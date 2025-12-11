@@ -1,3 +1,4 @@
+import { checkHighscore } from '/highscore.js';
 // Rendering and game drawing utilities (ES module) — simplified and robust
 let canvas, ctx, previewCanvas, previewCtx;
 export let cellSize = 36;
@@ -110,7 +111,11 @@ export function drawState(state) {
         if (state.gameOver) {
             console.log('Game Over triggered!');
             // open highscore modal if score qualifies
-            checkHighscore(state.score);
+            try {
+                checkHighscore(state.score);
+            } catch (e) {
+                console.error('checkHighscore failed:', e);
+            }
             const finalScoreEl = document.getElementById('finalScore');
             if (finalScoreEl) finalScoreEl.textContent = `Score: ${state.score || 0}`;
             modal.classList.add('show');
@@ -118,6 +123,7 @@ export function drawState(state) {
             modal.classList.remove('show');
         }
     }
+
     // in my addition, handle pause modal
     const pauseModal = document.getElementById('pauseModal');
     if (state.paused) {
