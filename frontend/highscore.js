@@ -41,10 +41,10 @@ export async function submitHighscore(name, score) {
     }
 }
 
+// check if score qualifies as highscore
 export function checkHighscore(score) {
-    // compare to list in localStorage
     const highscores = JSON.parse(localStorage.getItem("highscores")) || [];
-    // check if highscore worthy (empty or higher than the lowest in the list) 
+
     const qualifies =
         highscores.length < 10 ||
         score > highscores[highscores.length - 1].score;
@@ -52,5 +52,6 @@ export function checkHighscore(score) {
         document.getElementById("highscoreModal").classList.add("show");
         return true;
     }
-    return false; 
+
+    return false;
 }

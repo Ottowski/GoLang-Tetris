@@ -21,7 +21,7 @@ export default function initUI() {
         const gameOverModal = document.getElementById("gameOverModal");
         if (ok) {
             document.getElementById("highscoreModal").classList.remove("show");
-            // when Game Over-modal is shown
+            // when GameOver-modal is shown
             if (gameOverModal) {
                 gameOverModal.classList.add("show");
             }
@@ -31,6 +31,7 @@ export default function initUI() {
             submitBtn.textContent = 'Submitted';
             document.getElementById("highscoreModal").classList.remove("show");
             fetchHighscores();
+            window.controlsEnabled = true;
             setTimeout(() => {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit Score';
@@ -38,6 +39,7 @@ export default function initUI() {
         } else {
             submitBtn.disabled = false;
             alert('Could not submit score. Try again.');
+            window.controlsEnabled = true;
         }
     });
     }, 200);
@@ -108,25 +110,45 @@ export default function initUI() {
     }
     fetchInitial();
 
+    let controlsEnabled = true;
     // keyboard controls
     document.addEventListener('keydown', (ev) => {
+        const tag = ev.target.tagName.toLowerCase();
+        if (tag === 'input' || tag === 'textarea') {
+        // allow Keyboard input when in umbit textfields
+        return;}
+
+        const highscoreModal = document.getElementById('highscoreModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+
+        // block controls when in highscore or game over modal is open
+        if ((highscoreModal && highscoreModal.classList.contains('show')) ||
+        (gameOverModal && gameOverModal.classList.contains('show'))) {
+        return; // exit directly, no msg sends
+        }
         let msg = null;
         // arrow keys
         if (ev.key === 'ArrowLeft') msg = { type: 'move', dir: 'left' };
         else if (ev.key === 'ArrowRight') msg = { type: 'move', dir: 'right' };
         else if (ev.key === 'ArrowDown') msg = { type: 'move', dir: 'down' };
         else if (ev.key === 'ArrowUp') msg = { type: 'rotate' };
+        
         // WASD keys
         else if (ev.key === 'a' || ev.key === 'A') msg = { type: 'move', dir: 'left' };
         else if (ev.key === 'd' || ev.key === 'D') msg = { type: 'move', dir: 'right' };
         else if (ev.key === 's' || ev.key === 'S') msg = { type: 'move', dir: 'down' };
         else if (ev.key === 'w' || ev.key === 'W') msg = { type: 'rotate' };
+        
         // space to drop
         else if (ev.code === 'Space') msg = { type: 'drop' };
+        
         // pausing game
         else if (ev.key === 'p' || ev.key === 'P') msg = { type: 'pause/resume' };
+        
+        // no match, return
         if (!msg) return;
-        ev.preventDefault();
+        
+        ev.preventDefault(); // only block the defaul handled keys
         if (socket.isAvailable()) socket.send(msg);
     });
 
@@ -138,6 +160,7 @@ export default function initUI() {
         if (restartBtn) {
             restartBtn.addEventListener('click', () => {
                const gameOverModal = document.getElementById('gameOverModal');
+               controlsEnabled = true;  // restore controls
                const highscoreModal = document.getElementById('highscoreModal');
                if (gameOverModal) gameOverModal.classList.remove('show');
                if (highscoreModal) highscoreModal.classList.remove('show');
