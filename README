@@ -1,2 +1,5 @@
 To run game: Set-Location -LiteralPath 'C:\Users\ottoa\OneDrive\Skrivbord\Go-Tetris\backend'; go mod tidy; go run .
 
+
+Reminder att fixa. Se till att wasd och pilarna samt space inte fungerar i p (pause).
+
