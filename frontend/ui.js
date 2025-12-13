@@ -4,12 +4,16 @@ import { soundManager } from './sounds.js';
 import { fetchHighscores, submitHighscore, checkHighscore } from '/highscore.js';
 
 export default function initUI() {
+    
+
+
+
     // hookup submit button before game over modal
     setTimeout(() => {
     const submitBtn = document.getElementById('submitHighscoreBtn');
     const nameInput = document.getElementById('playerName');
     const finalScoreEl = document.getElementById('finalScore');
-
+    
     if (!submitBtn || !nameInput || !finalScoreEl) return;
     submitBtn.addEventListener('click', async () => {
         const name = nameInput.value.trim() || 'Anonymous';
@@ -46,6 +50,10 @@ export default function initUI() {
 
     initCanvas('tetris', 'preview', 36);
     console.log('initUI called');
+
+
+
+
 
     const wsUrl = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/ws';
     let lastScore = 0;
@@ -84,12 +92,15 @@ export default function initUI() {
             // reset when game restarts
             wasGameOver = false;
         }
-        // Detect if game paused
+        
+        // Detect if game paused or resumed
+        isPaused = state.paused;
         if (state.paused) {
             console.log("Game paused");
         } else {
             console.log("Game resumed");
-        }      
+        }    
+        
     }, () => {
         console.log('ws open');
     }, () => {
@@ -110,8 +121,12 @@ export default function initUI() {
     }
     fetchInitial();
 
-    let controlsEnabled = true;
+
+
+
     // keyboard controls
+    let controlsEnabled = true;
+    let isPaused = false;
     document.addEventListener('keydown', (ev) => {
         const tag = ev.target.tagName.toLowerCase();
         if (tag === 'input' || tag === 'textarea') {
@@ -124,33 +139,47 @@ export default function initUI() {
         // block controls when in highscore or game over modal is open
         if ((highscoreModal && highscoreModal.classList.contains('show')) ||
         (gameOverModal && gameOverModal.classList.contains('show'))) {
-        return; // exit directly, no msg sends
+        return; // exit directly, no message-control sends
         }
-        let msg = null;
+
+
+        let messageControl = null;
+
+        // assures that no controls are sent when game is paused, except unpausing
+        if (isPaused) {
+        if (ev.key === 'p' || ev.key === 'P') {
+            messageControl = { type: 'pause/resume' };
+        } else {
+            return; // blockera everything but the pause key
+        }
+        } else {
+        
         // arrow keys
-        if (ev.key === 'ArrowLeft') msg = { type: 'move', dir: 'left' };
-        else if (ev.key === 'ArrowRight') msg = { type: 'move', dir: 'right' };
-        else if (ev.key === 'ArrowDown') msg = { type: 'move', dir: 'down' };
-        else if (ev.key === 'ArrowUp') msg = { type: 'rotate' };
+        if (ev.key === 'ArrowLeft') messageControl = { type: 'move', dir: 'left' };
+        else if (ev.key === 'ArrowRight') messageControl = { type: 'move', dir: 'right' };
+        else if (ev.key === 'ArrowDown') messageControl = { type: 'move', dir: 'down' };
+        else if (ev.key === 'ArrowUp') messageControl = { type: 'rotate' };
         
         // WASD keys
-        else if (ev.key === 'a' || ev.key === 'A') msg = { type: 'move', dir: 'left' };
-        else if (ev.key === 'd' || ev.key === 'D') msg = { type: 'move', dir: 'right' };
-        else if (ev.key === 's' || ev.key === 'S') msg = { type: 'move', dir: 'down' };
-        else if (ev.key === 'w' || ev.key === 'W') msg = { type: 'rotate' };
+        else if (ev.key === 'a' || ev.key === 'A') messageControl = { type: 'move', dir: 'left' };
+        else if (ev.key === 'd' || ev.key === 'D') messageControl = { type: 'move', dir: 'right' };
+        else if (ev.key === 's' || ev.key === 'S') messageControl = { type: 'move', dir: 'down' };
+        else if (ev.key === 'w' || ev.key === 'W') messageControl = { type: 'rotate' };
         
         // space to drop
-        else if (ev.code === 'Space') msg = { type: 'drop' };
+        else if (ev.code === 'Space') messageControl = { type: 'drop' };
         
         // pausing game
-        else if (ev.key === 'p' || ev.key === 'P') msg = { type: 'pause/resume' };
-        
+        else if (ev.key === 'p' || ev.key === 'P') messageControl = { type: 'pause/resume' };
+        }
         // no match, return
-        if (!msg) return;
+        if (!messageControl) return;
         
         ev.preventDefault(); // only block the defaul handled keys
-        if (socket.isAvailable()) socket.send(msg);
+        if (socket.isAvailable()) socket.send(messageControl);
     });
+
+
 
     // restart button - setup with a small delay to ensure DOM is ready
     setTimeout(() => {
