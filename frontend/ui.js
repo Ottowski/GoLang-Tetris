@@ -4,9 +4,27 @@ import { soundManager } from './sounds.js';
 import { fetchHighscores, submitHighscore, checkHighscore } from '/highscore.js';
 
 export default function initUI() {
+<<<<<<< Updated upstream
     
 
 
+=======
+
+    function renderMode(mode) {
+        document.querySelectorAll('.screen').forEach(el =>
+        el.classList.remove('show')
+    );
+        if (mode === 'menu') {
+            document.getElementById('menu').classList.add('show');
+        }
+        if (mode === 'paused') {
+            document.getElementById('pauseModal').classList.add('show');
+        }
+        if (mode === 'gameover') {
+            document.getElementById('gameOverModal').classList.add('show');
+        }
+    }
+>>>>>>> Stashed changes
 
     // hookup submit button before game over modal
     setTimeout(() => {
