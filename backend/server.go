@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
 	"github.com/gorilla/websocket"
 )
 
@@ -20,6 +19,7 @@ type wsMessage struct {
 
 // GameState is a copy of Game safe to send over the wire
 type GameState struct {
+	Mode      GameMode `json:"mode"`
 	Board     [][]int `json:"board"`
 	Piece     []int   `json:"piece"`
 	Next      [][]int `json:"next"`
@@ -31,7 +31,34 @@ type GameState struct {
 	Paused    bool    `json:"paused"`
 	HighScore int     `json:"Highscore"`
 }
+switch g.Mode {
 
+case ModeMenu:
+    if msg.Type == "menu" && msg.Action == "start" {
+        g.Mode = ModePlaying
+    }
+
+case ModePlaying:
+    switch msg.Type {
+    case "move":
+        // rörelse
+    case "rotate":
+    case "drop":
+    case "pause":
+        g.Mode = ModePaused
+    }
+
+case ModePaused:
+    if msg.Type == "resume" {
+        g.Mode = ModePlaying
+    }
+
+case ModeGameOver:
+    if msg.Type == "restart" {
+        *g = *newGame()
+        g.Mode = ModeMenu
+    }
+}
 func snapshot(g *Game) GameState {
 	g.mutex.Lock()
 	defer g.mutex.Unlock()
@@ -57,6 +84,7 @@ func snapshot(g *Game) GameState {
 		n[i] = pi
 	}
 	return GameState{
+		Mode:     g.Mode,
 		Board:    b,
 		Piece:    p,
 		Next:     n,
