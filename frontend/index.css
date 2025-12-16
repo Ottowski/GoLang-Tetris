@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    color: #0f0;
+}
+
+#menu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+button {
+    width: 220px;
+    padding: 12px;
+    font-size: 18px;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: #0f0;
+    color: #000;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

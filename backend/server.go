@@ -20,7 +20,6 @@ type wsMessage struct {
 
 // GameState is a copy of Game safe to send over the wire
 type GameState struct {
-<<<<<<< Updated upstream
 	Board     [][]int `json:"board"`
 	Piece     []int   `json:"piece"`
 	Next      [][]int `json:"next"`
@@ -31,19 +30,6 @@ type GameState struct {
 	GameOver  bool    `json:"gameOver"`
 	Paused    bool    `json:"paused"`
 	HighScore int     `json:"Highscore"`
-=======
-	Mode      GameMode `json:"mode"`
-	Board     [][]int  `json:"board"`
-	Piece     []int    `json:"piece"`
-	Next      [][]int  `json:"next"`
-	PieceID   int      `json:"pieceId"`
-	X         int      `json:"x"`
-	Y         int      `json:"y"`
-	Score     int      `json:"score"`
-	GameOver  bool     `json:"gameOver"`
-	Paused    bool     `json:"paused"`
-	HighScore int      `json:"Highscore"`
->>>>>>> Stashed changes
 }
 
 func snapshot(g *Game) GameState {
@@ -81,44 +67,6 @@ func snapshot(g *Game) GameState {
 		GameOver: g.GameOver,
 		Paused:   g.Paused,
 	}
-
-}
-func handleMessage(g *Game, msg wsMessage) bool {
-	updated := false
-
-	switch g.Mode {
-	case ModeMenu:
-		if msg.Type == "menu_start" {
-			g.Mode = ModePlaying
-			updated = true
-		}
-	case ModePlaying:
-		switch msg.Type {
-		case "move":
-			// rörelse
-			updated = true
-		case "rotate":
-			updated = true
-		case "drop":
-			updated = true
-		case "pause":
-			g.Mode = ModePaused
-			updated = true
-		}
-	case ModePaused:
-		if msg.Type == "resume" {
-			g.Mode = ModePlaying
-			updated = true
-		}
-	case ModeGameOver:
-		if msg.Type == "restart" {
-			*g = *newGame()
-			g.Mode = ModeMenu
-			updated = true
-		}
-	}
-
-	return updated
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
@@ -164,7 +112,44 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			g.mutex.Lock()
-			updated := handleMessage(g, msg)
+			if g.GameOver {
+				g.mutex.Unlock()
+				continue
+			}
+
+			// State of game signals
+			updated := false
+
+			switch msg.Type {
+			case "move":
+				if msg.Dir == "left" && !g.collides(g.X-1, g.Y, g.Piece) {
+					g.X--
+				} else if msg.Dir == "right" && !g.collides(g.X+1, g.Y, g.Piece) {
+					g.X++
+				} else if msg.Dir == "down" && !g.collides(g.X, g.Y+1, g.Piece) {
+					g.Y++
+				}
+				updated = true
+
+			case "rotate":
+				rotated := rotatePiece(g.Piece)
+				if !g.collides(g.X, g.Y, rotated) {
+					g.Piece = rotated
+				}
+				updated = true
+
+			case "drop":
+				for !g.collides(g.X, g.Y+1, g.Piece) {
+					g.Y++
+				}
+				g.lock()
+				updated = true
+
+			case "pause/resume":
+				g.Paused = !g.Paused
+				updated = true
+			}
+
 			g.mutex.Unlock()
 
 			if updated {
@@ -172,7 +157,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				conn.WriteJSON(snapshot(g))
 				writeMu.Unlock()
 			}
-
 		}
 	}()
 

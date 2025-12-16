@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tetris</title>
+    <link rel="stylesheet" href="tetris.css">
+</head>
+<body>
+    <div id="layout">
+
+        
+        <aside id="score-aside">
+            <div id="score-panel">
+                <div class="label">Score</div>
+                <div id="score" class="score-display">0</div>
+            </div>
+
+            <div id="highscore-container">
+                <div class="label">Highscores</div>
+                <ul id="highscores-list"></ul>
+            </div>
+
+            <!-- Highscore Modal -->
+             <div id="highscoreModal" class="modal">
+                <div class="modal-content">
+                    <h2>New Highscore!</h2>
+                    <p id="hsScore">Your Score: 0</p>
+                    <input id="playerName" placeholder="Your name" maxlength="20">
+                    <button id="submitHighscoreBtn">Submit Score</button>
+                </div>
+            </div>
+        </aside>
+
+        <div id="left">
+            <div class="label">Next Block</div>
+            <canvas id="preview" width="144" height="144"></canvas>
+        </div>
+        
+        <div id="center">
+            <canvas id="tetris" width="360" height="720"></canvas>
+        </div>
+
+
+            <!-- Instructions list -->
+        <div id="instructions">    
+            <div class="label">Controls</div>
+            <ul class="instructions-list">
+                <li>⬅️ / A – Move left</li>
+                <li>➡️ / D – Move right</li>
+                <li>⬇️ / S – Soft drop</li>
+                <li>⬆️ / W – Rotate</li>
+                <li>⎵ Space – Hard drop</li>
+                <li>P – Pause / Resume</li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <!-- GameOver Modal (hidden by default) -->
+    <div id="gameOverModal" class="modal">
+        <div class="modal-content">
+            <h2>Game Over</h2>
+            <p id="finalScore">Score: 0</p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+    </div>
+    <!-- Pause Modal -->
+    <div id="pauseModal" class="modal">
+        <div class="modal-content">
+            <h2>PAUSED</h2>
+            <p>Press P to resume</p>
+        </div>
+    </div>
+
+    
+
+    <script type="module" src="./app.js"></script>
+    <noscript>Please enable JavaScript to play the game.</noscript>
+</body>
+</html>
