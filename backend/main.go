@@ -31,6 +31,15 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/quit", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		log.Println("Game quit")
+		w.WriteHeader(http.StatusOK)
+	})
+
 	log.Println("Server listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

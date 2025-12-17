@@ -20,3 +20,11 @@ if (document.readyState === 'loading') {
     tryInit();
 }
 
+document.getElementById('quitBtn').addEventListener('click', async () => {
+    
+    await fetch('/quit', { method: 'POST' });
+
+    // quit game
+    window.location.href = '/index.html';
+});
+

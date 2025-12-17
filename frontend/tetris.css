@@ -216,3 +216,26 @@ canvas {
     border-color: #0f0;
 }
 
+
+/* Quit Button */
+#quitBtn {
+    width: 220px;
+    padding: 12px;
+    font-size: 18px;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    cursor: pointer;
+}
+
+
+#quitBtn:hover:not(:disabled) {
+    background: #0f0;
+    color: #000;
+}
+
+
+#quitBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
