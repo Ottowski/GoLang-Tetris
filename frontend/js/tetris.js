@@ -1,7 +1,7 @@
 import initUI from './ui.js';
 
 // bootstrap UI when the module loads
-console.log('frontend/app.js loaded');
+console.log('frontend/js/tetris.js loaded');
 
 // Try to run immediately, or wait for DOMContentLoaded
 function tryInit() {
@@ -20,11 +20,11 @@ if (document.readyState === 'loading') {
     tryInit();
 }
 
-document.getElementById('quitBtn').addEventListener('click', async () => {
+document.getElementById('goBackBtn').addEventListener('click', async () => {
     
-    await fetch('/quit', { method: 'POST' });
+    await fetch('/goBack', { method: 'POST' });
 
-    // quit game
-    window.location.href = '/index.html';
+    // go back to mainmenu
+    window.location.href = '/html/index.html';
 });
 

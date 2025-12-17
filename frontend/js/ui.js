@@ -1,7 +1,7 @@
 import { createWS } from './ws.js';
 import { initCanvas, drawState } from './game.js';
 import { soundManager } from './sounds.js';
-import { fetchHighscores, submitHighscore, checkHighscore } from '/highscore.js';
+import { fetchHighscores, submitHighscore, checkHighscore } from './highscore.js';
 
 export default function initUI() {
     
