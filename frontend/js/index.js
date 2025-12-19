@@ -13,11 +13,11 @@ document.getElementById('startBtn').addEventListener('click', async () => {
 
     // go to difficulty selection
     window.location.href = '/difficulty.html';
-});
+});*/
 document.getElementById('settingsBtn').addEventListener('click', async () => {
     
     await fetch('/settings', { method: 'POST' });
 
     // go to difficulty selection
-    window.location.href = '/settings.html';
-});*/
+    window.location.href = '/html/settings.html';
+});

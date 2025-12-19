@@ -5,8 +5,14 @@ export class SoundManager {
             this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.audioCtx.createGain();
             this.masterGain.connect(this.audioCtx.destination);
-            this.masterGain.gain.value = 0.1; // 10% master volume
-            this.enabled = true;
+
+            // 🔹 Load saved settings in volume/sound settings
+            const savedVolume = localStorage.getItem('volume');
+            const savedEnabled = localStorage.getItem('soundEnabled');
+
+            this.masterGain.gain.value = savedVolume !== null ? Number(savedVolume) : 0.1;
+            this.enabled = savedEnabled !== null ? savedEnabled === 'true' : true;
+
         } catch (e) {
             console.warn('Audio context initialization failed:', e);
             this.enabled = false;
@@ -92,6 +98,7 @@ export class SoundManager {
      */
     toggle() {
         this.enabled = !this.enabled;
+        localStorage.setItem('soundEnabled', this.enabled);
         return this.enabled;
     }
 
@@ -100,7 +107,9 @@ export class SoundManager {
      * @param {number} level - Volume 0-1
      */
     setVolume(level) {
-        this.masterGain.gain.value = Math.max(0, Math.min(1, level));
+        const v = Math.max(0, Math.min(1, level));
+        this.masterGain.gain.value = v;
+        localStorage.setItem('volume', v);
     }
 
     /**

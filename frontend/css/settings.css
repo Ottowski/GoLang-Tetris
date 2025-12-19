@@ -1,3 +1,26 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    color: #0f0;
+}
+
+#settings {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
 /* Go back to main menu Button */
 #goBackBtn {
     width: 220px;

@@ -2,17 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Tetris – Main Menu</title>
+    <title>Tetris – Settings</title>
     <link rel="stylesheet" href="../css/settings.css">
 </head>
 <body>
 
-<div id="Settings">
+<div id="settings">
     <h1>Settings</h1>
-    <!-- Go back button -->
+
+    <label>
+        <input type="checkbox" id="soundToggle">
+        Enable sound
+    </label>
+
+    <br><br>
+
+    <label>
+        Sound Volume
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.01">
+    </label>
+
+    <br><br>
+
     <button id="goBackBtn">Back to mainmenu</button>
 </div>
 
-<script src="../js/settings.js"></script>
+<script type="module" src="../js/settings.js"></script>
 </body>
 </html>
