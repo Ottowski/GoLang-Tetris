@@ -25,10 +25,15 @@ export function clear() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
+ // check if ghost piece rendering is enabled and export to settings.js
+export function isGhostPieceEnabled() {
+    return localStorage.getItem('ghostPieceEnabled') !== '0';
+}
 
 
 // Ghost piece rendering
 function drawGhostPiece(state) {
+    if (!isGhostPieceEnabled()) return;
     if (!ctx || !state.piece) return;
 
     // ghost Y-position
