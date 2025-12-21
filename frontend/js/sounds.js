@@ -6,7 +6,7 @@ export class SoundManager {
             this.masterGain = this.audioCtx.createGain();
             this.masterGain.connect(this.audioCtx.destination);
 
-            // 🔹 Load saved settings in volume/sound settings
+            // Load saved settings in volume/sound settings
             const savedVolume = localStorage.getItem('volume');
             const savedEnabled = localStorage.getItem('soundEnabled');
 
