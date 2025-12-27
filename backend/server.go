@@ -78,7 +78,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	g := newGame()
-	tetrix := NewTetrixField()
 
 	// ticker for game steps
 	ticker := time.NewTicker(600 * time.Millisecond)
@@ -180,20 +179,9 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		case <-ticker.C:
 			// Advance game state
 			g.step()
-			// Advance tetrix field
-			tetrix.Step()
 			// Send updated state
 			writeMu.Lock()
-			// Send combined game state
-
-			// Update every tick with the tetrix field
-			if err := conn.WriteJSON(struct {
-				Game   GameState      `json:"game"`
-				Tetrix []*TetrixPiece `json:"tetrix"`
-			}{
-				Game:   snapshot(g),
-				Tetrix: tetrix.Snapshot(),
-			}); err != nil {
+			if err := conn.WriteJSON(snapshot(g)); err != nil {
 				writeMu.Unlock()
 				return
 			}
