@@ -3,9 +3,15 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
 
-const animBlockSize = 36;  // blockstorlek
-const fallSpeed = 4;        // fallhastighet
-const slotSpacing = 150;    // mycket bredare slots, blocken kolliderar inte
+const animBlockSize = 36;  // block size
+const fallSpeed = 4;        // fall speed
+const slotSpacing = 150;    // much wider slots, blocks don't collide
+
+// check if tetrix animation is enabled
+function isTetrixEnabled() {
+    return localStorage.getItem('tetrixEnabled') !== '0';
+}
+
 
 const TETRIS_BLOCKS = [
     [[1,1,1,1]],           // I
@@ -32,6 +38,14 @@ for (let x = 0; x < canvas.width; x += slotSpacing) {
 }
 
 function drawTetrix() {
+
+    //  boolean to turn off tetrix canvas
+    if (!isTetrixEnabled()) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(drawTetrix);
+        return;
+    }
+
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
