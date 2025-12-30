@@ -76,10 +76,9 @@ function drawTetrix() {
         return;
     }
     
-    // clear canvas
-    // fade-out background for tail effect
-ctx.fillStyle = 'rgba(0, 0, 0, 0.35)'; // justera 0.15–0.35
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // clear canvas with fade effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)'; // fade-out background for tail effect
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
     // Iterate through each drop

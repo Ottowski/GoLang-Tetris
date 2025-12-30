@@ -96,7 +96,7 @@ h1 {
     transform: rotate(45deg);
 }
 
-/* ===== Volume slider ===== */
+/* Volume slider */
 .volume {
     display: flex;
     flex-direction: column;
@@ -110,4 +110,19 @@ h1 {
     accent-color: #0f0;
 }
 
+/* Tetrix Canvas */
 
+#tetrixCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Lift UI over canvas */
+#settings {
+    position: relative;
+    z-index: 1;
+}

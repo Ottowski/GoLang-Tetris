@@ -9,17 +9,6 @@ body {
     color: #0f0;
 }
 
-#tetrixCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0; /* behind meny */
-    pointer-events: none; /* allow clicks through the canvas */
-}
-
-
 #menu {
     display: flex;
     flex-direction: column;
@@ -52,4 +41,17 @@ button:hover:not(:disabled) {
 button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+
+/* Tetrix Canvas */
+
+#tetrixCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* behind meny */
+    pointer-events: none; /* allow clicks through the canvas */
 }

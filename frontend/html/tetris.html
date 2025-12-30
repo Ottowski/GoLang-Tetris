@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="../css/tetris.css">
 </head>
 <body>
+
+    <canvas id="tetrixCanvas"></canvas> <!-- for tetrix animation -->
+
     <div id="layout">
 
-        
+
         <aside id="score-aside">
             <div id="score-panel">
                 <div class="label">Score</div>
@@ -78,9 +81,9 @@
         </div>
     </div>
 
-    
 
-    <script type="module" src="../js/tetris.js"></script>
-    <noscript>Please enable JavaScript to play the game.</noscript>
+
+<script type="module" src="../js/tetris.js"></script>
+<script type="module" src="../js/tetrix.js"></script> <!-- animation -->
 </body>
 </html>
