@@ -11,18 +11,29 @@ const (
 	cols = 10
 )
 
+// regular struct definition for Game
 type Game struct {
-	Board     [][]int `json:"board"`
-	Piece     []int   `json:"piece"` // flattened 4x4
-	Next      [][]int `json:"next"`
-	PieceID   int     `json:"pieceId"`
-	X         int     `json:"x"`
-	Y         int     `json:"y"`
-	Score     int     `json:"score"`
-	GameOver  bool    `json:"gameOver"`
-	Paused    bool    `json:"paused"`
-	HighScore int     `json:"Highscore"`
+	Board     [][]int  `json:"board"`
+	Piece     []int    `json:"piece"` // flattened 4x4
+	Next      [][]int  `json:"next"`
+	PieceID   int      `json:"pieceId"`
+	X         int      `json:"x"`
+	Y         int      `json:"y"`
+	Score     int      `json:"score"`
+	GameOver  bool     `json:"gameOver"`
+	Paused    bool     `json:"paused"`
+	HighScore int      `json:"Highscore"`
+	Mode      GameMode `json:"mode"`
 	mutex     sync.Mutex
+}
+
+// game mode difficulty struct
+type GameMode struct {
+	Name        string `json:"name"`
+	GhostPiece  bool   `json:"ghostPiece"`
+	NextPreview bool   `json:"nextPreview"`
+	CanPause    bool   `json:"canPause"`
+	FallSpeed   int    `json:"fallSpeed"`
 }
 
 func (g *Game) step() {
@@ -45,12 +56,12 @@ func (g *Game) step() {
 	}
 }
 
-func newGame() *Game {
+func newGame(mode GameMode) *Game {
 	b := make([][]int, rows)
 	for i := range b {
 		b[i] = make([]int, cols)
 	}
-	g := &Game{Board: b}
+	g := &Game{Board: b, Mode: mode}
 	// initialize next queue (3 upcoming pieces)
 	g.Next = make([][]int, 0, 3)
 	for i := 0; i < 3; i++ {

@@ -5,9 +5,25 @@ const tetrixToggle = document.getElementById('tetrixToggle');
 const ghostToggle = document.getElementById('ghostToggle');
 const soundToggle = document.getElementById('soundToggle');
 const volumeSlider = document.getElementById('volumeSlider');
-
-
 const goBackBtn = document.getElementById('goBackBtn');
+const difficultyRadios = document.querySelectorAll('input[name="difficulty"]');
+const savedMode = localStorage.getItem('gameMode') || 'beginner';
+
+// Set radio based on saved mode
+difficultyRadios.forEach(radio => {
+  radio.checked = radio.value === savedMode;
+});
+
+difficultyRadios.forEach(radio => {
+  radio.addEventListener('change', async () => {
+    const selectedMode = radio.value;
+
+    // save in localStorage
+    localStorage.setItem('gameMode', selectedMode);
+
+    console.log('Game mode set to:', selectedMode);
+  });
+});
 
 // Load current values
 const saved = localStorage.getItem('ghostPieceEnabled');

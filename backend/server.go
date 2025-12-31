@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"sync"
@@ -20,16 +21,33 @@ type wsMessage struct {
 
 // GameState is a copy of Game safe to send over the wire
 type GameState struct {
-	Board     [][]int `json:"board"`
-	Piece     []int   `json:"piece"`
-	Next      [][]int `json:"next"`
-	PieceID   int     `json:"pieceId"`
-	X         int     `json:"x"`
-	Y         int     `json:"y"`
-	Score     int     `json:"score"`
-	GameOver  bool    `json:"gameOver"`
-	Paused    bool    `json:"paused"`
-	HighScore int     `json:"Highscore"`
+	Board     [][]int  `json:"board"`
+	Piece     []int    `json:"piece"`
+	Next      [][]int  `json:"next"`
+	PieceID   int      `json:"pieceId"`
+	X         int      `json:"x"`
+	Y         int      `json:"y"`
+	Score     int      `json:"score"`
+	GameOver  bool     `json:"gameOver"`
+	Paused    bool     `json:"paused"`
+	Mode      GameMode `json:"mode"`
+	HighScore int      `json:"Highscore"`
+}
+
+// Game modes difficlty defenitions
+var BeginnerMode = GameMode{
+	Name:        "Beginner",
+	GhostPiece:  true,
+	NextPreview: true,
+	CanPause:    true,
+	FallSpeed:   1,
+}
+var ClassicMode = GameMode{
+	Name:        "Classic",
+	GhostPiece:  false,
+	NextPreview: false,
+	CanPause:    false,
+	FallSpeed:   2,
 }
 
 func snapshot(g *Game) GameState {
@@ -66,9 +84,30 @@ func snapshot(g *Game) GameState {
 		Score:    g.Score,
 		GameOver: g.GameOver,
 		Paused:   g.Paused,
+		Mode:     g.Mode,
 	}
 }
 
+// API handler to get current game mode
+func GetGameMode(w http.ResponseWriter, r *http.Request) {
+	mode := getModeFromSessionOrDefault(r)
+	json.NewEncoder(w).Encode(mode)
+}
+
+// helper to get game mode from session or default
+func getModeFromSessionOrDefault(r *http.Request) GameMode {
+	mode := r.URL.Query().Get("mode")
+	switch mode {
+	case "classic":
+		return ClassicMode
+	case "beginner":
+		fallthrough
+	default:
+		return BeginnerMode
+	}
+}
+
+// Websocket handler for game session
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -77,10 +116,14 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	g := newGame()
+	// create new game
+	g := newGame(getModeFromSessionOrDefault(r))
+	log.Println("Starting game with mode:", g.Mode.Name)
 
 	// ticker for game steps
-	ticker := time.NewTicker(600 * time.Millisecond)
+	baseSpeed := 600 * time.Millisecond
+	speed := baseSpeed / time.Duration(g.Mode.FallSpeed)
+	ticker := time.NewTicker(speed)
 	defer ticker.Stop()
 
 	// channel to signal quit
@@ -146,8 +189,10 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				updated = true
 
 			case "pause/resume":
-				g.Paused = !g.Paused
-				updated = true
+				if g.Mode.CanPause {
+					g.Paused = !g.Paused
+					updated = true
+				}
 			}
 
 			g.mutex.Unlock()
@@ -172,7 +217,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		case <-restartChan:
 			// Create a new game on restart
 			log.Println("Creating new game after restart")
-			g = newGame()
+			g = newGame(getModeFromSessionOrDefault(r))
 			writeMu.Lock()
 			conn.WriteJSON(snapshot(g))
 			writeMu.Unlock()
