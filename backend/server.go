@@ -40,14 +40,15 @@ var BeginnerMode = GameMode{
 	GhostPiece:  true,
 	NextPreview: true,
 	CanPause:    true,
-	FallSpeed:   1,
+	FallSpeed:   1, // 600 ms
 }
+
 var ClassicMode = GameMode{
 	Name:        "Classic",
 	GhostPiece:  false,
 	NextPreview: false,
 	CanPause:    false,
-	FallSpeed:   2,
+	FallSpeed:   3, // 200 ms
 }
 
 func snapshot(g *Game) GameState {

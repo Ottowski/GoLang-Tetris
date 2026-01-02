@@ -63,6 +63,12 @@ export default function initUI() {
     const socket = createWS(wsUrl, (state) => {
         // incoming snapshot from server
         drawState(state);
+        
+        // show/hide next preview based on settings
+        const previewCanvas = document.getElementById('preview');
+        if (previewCanvas) {
+        previewCanvas.style.display = state.mode.nextPreview ? 'block' : 'none';}
+
         // Detect block placement (piece changed, meaning last piece locked)
         if (lastPieceID !== null && state.pieceId !== lastPieceID) {
             soundManager.playBlockPlace();

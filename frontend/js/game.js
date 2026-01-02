@@ -78,7 +78,9 @@ export function drawState(state) {
     if (!state) return;
     if (!ctx) return;
     clear();
-
+    // draw ghost piece if enabled
+    if (state.mode.ghostPiece) {
+    drawGhostPiece(state);}
     // draw board
     if (Array.isArray(state.board)) {
         for (let y = 0; y < state.board.length; y++) {
@@ -90,7 +92,6 @@ export function drawState(state) {
     }
 
     // overlay falling piece
-    drawGhostPiece(state);
     const piece = state.piece || [];
     const px = Number.isFinite(state.x) ? state.x : 0;
     const py = Number.isFinite(state.y) ? state.y : 0;
@@ -101,9 +102,16 @@ export function drawState(state) {
         }
     }
 
-    // preview for block piece
-    if (state.next && state.next.length > 0 && previewCtx) drawPreview(state.next[0]);
-    
+    // preview for block piece (ONLY if enabled by mode)
+    if (
+    state.mode.nextPreview &&
+    state.next &&
+    state.next.length > 0 &&
+    previewCtx
+    ) {
+    drawPreview(state.next[0]);
+    }
+
     // update score display
     const scoreEl = document.getElementById('score');
     if (scoreEl) scoreEl.textContent = state.score || 0;
