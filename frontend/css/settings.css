@@ -13,7 +13,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    align-items: center;
+    align-items: flex-start; 
+    min-width: 320px; 
 }
 
 h1 {
