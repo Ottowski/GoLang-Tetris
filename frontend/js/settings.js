@@ -11,17 +11,15 @@ const savedMode = localStorage.getItem('gameMode') || 'beginner';
 
 // Set radio based on saved mode
 difficultyRadios.forEach(radio => {
-  radio.checked = radio.value === savedMode;
-});
-
-difficultyRadios.forEach(radio => {
-  radio.addEventListener('change', async () => {
+  radio.addEventListener('change', () => {
     const selectedMode = radio.value;
-
-    // save in localStorage
     localStorage.setItem('gameMode', selectedMode);
-
     console.log('Game mode set to:', selectedMode);
+
+    // Notify game of mode change if WebSocket is available
+    if (window.gameSocket && window.gameSocket.isAvailable()) {
+        window.gameSocket.send({ type: 'restart', mode: selectedMode });
+    }
   });
 });
 

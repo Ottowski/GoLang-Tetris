@@ -108,7 +108,6 @@ func getModeFromSessionOrDefault(r *http.Request) GameMode {
 	}
 }
 
-// Websocket handler for game session
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -122,10 +121,17 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Starting game with mode:", g.Mode.Name)
 
 	// ticker for game steps
-	baseSpeed := 600 * time.Millisecond
-	speed := baseSpeed / time.Duration(g.Mode.FallSpeed)
-	ticker := time.NewTicker(speed)
-	defer ticker.Stop()
+	var ticker *time.Ticker
+	createTicker := func() {
+		if ticker != nil {
+			ticker.Stop()
+		}
+		baseSpeed := 600 * time.Millisecond
+		speed := baseSpeed / time.Duration(g.Mode.FallSpeed)
+		ticker = time.NewTicker(speed)
+	}
+
+	createTicker() // start ticker initially
 
 	// channel to signal quit
 	quit := make(chan struct{})
@@ -147,11 +153,32 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 			if msg.Type == "restart" {
 				log.Println("Restart message received")
-				// Signal restart
-				select {
-				case restartChan <- struct{}{}:
-				default:
+
+				// default mode
+				selectedMode := getModeFromSessionOrDefault(r)
+
+				// check for mode in restart message
+				type restartMsg struct {
+					Type string `json:"type"`
+					Mode string `json:"mode,omitempty"`
 				}
+				var rm restartMsg
+				data, _ := json.Marshal(msg)
+				json.Unmarshal(data, &rm)
+
+				switch rm.Mode {
+				case "classic":
+					selectedMode = ClassicMode
+				case "beginner":
+					selectedMode = BeginnerMode
+				}
+
+				g = newGame(selectedMode)
+				log.Println("Starting game with mode:", g.Mode.Name)
+				createTicker()
+				writeMu.Lock()
+				conn.WriteJSON(snapshot(g))
+				writeMu.Unlock()
 				continue
 			}
 
@@ -161,7 +188,6 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			// State of game signals
 			updated := false
 
 			switch msg.Type {
@@ -215,13 +241,16 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-quit:
 			return
+
 		case <-restartChan:
 			// Create a new game on restart
-			log.Println("Creating new game after restart")
-			g = newGame(getModeFromSessionOrDefault(r))
+			g = newGame(getModeFromSessionOrDefault(r)) // <--- fixad
+			log.Println("Starting game with mode:", g.Mode.Name)
+			createTicker() // reset ticker for new game
 			writeMu.Lock()
 			conn.WriteJSON(snapshot(g))
 			writeMu.Unlock()
+
 		case <-ticker.C:
 			// Advance game state
 			g.step()

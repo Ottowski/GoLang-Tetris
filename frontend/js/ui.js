@@ -5,9 +5,6 @@ import { fetchHighscores, submitHighscore, checkHighscore } from './highscore.js
 
 export default function initUI() {
     
-
-
-
     // hookup submit button before game over modal
     setTimeout(() => {
     const submitBtn = document.getElementById('submitHighscoreBtn');
@@ -52,13 +49,18 @@ export default function initUI() {
     console.log('initUI called');
 
 
+    
+    // setup WebSocket connection to receive game state updates
+    const mode = localStorage.getItem('gameMode') || 'beginner';
+    const wsUrl =
+   (location.protocol === 'https:' ? 'wss:' : 'ws:') +
+    '//' + location.host + '/ws?mode=' + mode;
 
-
-
-    const wsUrl = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/ws';
     let lastScore = 0;
     let wasGameOver = false;
     let lastPieceID = null;
+
+
 
     const socket = createWS(wsUrl, (state) => {
         // incoming snapshot from server
@@ -126,7 +128,6 @@ export default function initUI() {
         }
     }
     fetchInitial();
-
 
 
 
