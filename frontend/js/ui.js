@@ -1,6 +1,6 @@
-import { GameController } from './controllers.js/gameController.js';
-import { InputController } from './controllers.js/inputController.js';
-import { ModalController } from './controllers.js/modalController.js';
+import { GameController } from './controllers/gameController.js';
+import { InputController } from './controllers/inputController.js';
+import { ModalController } from './controllers/modalController.js';
 import { fetchHighscores } from './highscore.js';
 
 export default function initUI() {

@@ -5,6 +5,7 @@ export class InputController {
         this.controlsEnabled = true;
     }
 
+    // Initialize input listeners
     init() {
         document.addEventListener('keydown', (ev) => {
             this.handleKeyDown(ev);
@@ -65,6 +66,7 @@ export class InputController {
         return null;
     }
 
+    // Enable or disable controls
     setControlsEnabled(enabled) {
         this.controlsEnabled = enabled;
     }

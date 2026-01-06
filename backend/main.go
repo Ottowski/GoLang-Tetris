@@ -12,6 +12,7 @@ func main() {
 
 	loadHighscores()
 
+	// API endpoints
 	http.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
