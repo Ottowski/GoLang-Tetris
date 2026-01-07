@@ -145,7 +145,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	var writeMu sync.Mutex
 
 	// channel to signal game restart
-	restartChan := make(chan struct{})
+	restartChan := make(chan GameMode)
 
 	// Read controls
 	go func() {
@@ -178,12 +178,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				case "beginner":
 					selectedMode = BeginnerMode
 				}
-				g = newGame(selectedMode)
-				log.Println("Starting game with mode:", g.Mode.Name)
-				createTicker()
-				writeMu.Lock()
-				conn.WriteJSON(snapshot(g))
-				writeMu.Unlock()
+				restartChan <- selectedMode
 				continue
 			}
 
@@ -249,9 +244,9 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 		case <-quit:
 			return
 
-		case <-restartChan:
+		case mode := <-restartChan:
 			// Create a new game on restart
-			g = newGame(getModeFromSessionOrDefault(r)) // <--- fixad
+			g = newGame(mode)
 			log.Println("Starting game with mode:", g.Mode.Name)
 			createTicker() // reset ticker for new game
 			writeMu.Lock()
