@@ -1,4 +1,4 @@
-import { soundManager } from './sounds.js';
+import { soundManager } from '../js/sounds.js';
 
 // Settings elements values for setting up event listeners
 const tetrixToggle = document.getElementById('tetrixToggle');
@@ -8,6 +8,13 @@ const volumeSlider = document.getElementById('volumeSlider');
 const goBackBtn = document.getElementById('goBackBtn');
 const difficultyRadios = document.querySelectorAll('input[name="difficulty"]');
 const savedMode = localStorage.getItem('gameMode') || 'beginner';
+
+// Set the initial checked state based on saved mode
+difficultyRadios.forEach(radio => {
+  if (radio.value === savedMode) {
+    radio.checked = true;
+  }
+});
 
 // Set radio based on saved mode
 difficultyRadios.forEach(radio => {
@@ -66,5 +73,5 @@ document.getElementById('goBackBtn').addEventListener('click', async () => {
     await fetch('/goBack', { method: 'POST' });
 
     // go back to mainmenu
-    window.location.href = '../html/index.html';
+    window.location.href = './index.html';
 });

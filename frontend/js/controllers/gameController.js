@@ -112,7 +112,7 @@ export class GameController {
     restartGame() {
         this.wasGameOver = false;
         this.lastScore = 0;
-        this.sendControlMessage({ type: 'restart' });
+        this.sendControlMessage({ type: 'restart', mode: this.mode });
     }
 
     isGamePaused() {

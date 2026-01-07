@@ -1,17 +1,8 @@
 import { ColorManager } from './colorManager.js';
 
-/**
- * Renderer is the main rendering orchestrator for the Tetris game.
- * Coordinates all rendering components to draw the complete game state.
- */
+// Renders the main game elements on the Tetris board
 export class Renderer {
-    /**
-     * Creates a new Renderer instance
-     * @param {CanvasManager} canvasManager - Manages canvas operations
-     * @param {GhostPieceRenderer} ghostPieceRenderer - Handles ghost piece rendering
-     * @param {PreviewRenderer} previewRenderer - Handles next piece preview
-     * @param {UIManager} uiManager - Handles UI updates
-     */
+    // Initializes the Renderer with references to other rendering components
     constructor(canvasManager, ghostPieceRenderer, previewRenderer, uiManager) {
         this.canvasManager = canvasManager;
         this.ghostPieceRenderer = ghostPieceRenderer;
@@ -19,10 +10,7 @@ export class Renderer {
         this.uiManager = uiManager;
     }
 
-    /**
-     * Renders the complete game state including board, pieces, ghost piece, and UI
-     * @param {Object} state - The current game state from the server
-     */
+    // Draws the entire game state onto the canvas
     drawState(state) {
         if (!state) return;
         if (!this.canvasManager.getContext()) return;
@@ -66,12 +54,7 @@ export class Renderer {
         this.uiManager.handlePauseModal(state.paused);
     }
 
-    /**
-     * Draws a single cell on the main game canvas
-     * @param {number} x - X coordinate on the board
-     * @param {number} y - Y coordinate on the board
-     * @param {string} color - Hex color code for the cell
-     */
+    // Draws a single cell at the specified board coordinates with the given color
     drawCell(x, y, color) {
         const ctx = this.canvasManager.getContext();
         const cellSize = this.canvasManager.getCellSize();

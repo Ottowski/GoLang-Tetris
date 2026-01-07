@@ -1,32 +1,19 @@
 import { ColorManager } from './colorManager.js';
 
-/**
- * GhostPieceRenderer handles the rendering of ghost pieces (preview of where
- * the current piece will land). Ghost pieces help players position pieces more accurately.
- */
+// Renders the ghost piece on the Tetris board
 export class GhostPieceRenderer {
-    /**
-     * Creates a new GhostPieceRenderer instance
-     * @param {CanvasManager} canvasManager - The canvas manager for rendering context
-     * @param {CollisionDetector} collisionDetector - The collision detector for finding landing position
-     */
+    // Initializes the GhostPieceRenderer with references to CanvasManager and CollisionDetector
     constructor(canvasManager, collisionDetector) {
         this.canvasManager = canvasManager;
         this.collisionDetector = collisionDetector;
     }
 
-    /**
-     * Checks if ghost piece rendering is enabled in localStorage
-     * @returns {boolean} True if ghost pieces should be rendered
-     */
+    // Checks if the ghost piece feature is enabled in local storage
     isGhostPieceEnabled() {
         return localStorage.getItem('ghostPieceEnabled') !== '0';
     }
 
-    /**
-     * Renders the ghost piece at the position where the current piece would land
-     * @param {Object} state - The current game state
-     */
+    // Renders the ghost piece on the board based on the current state
     drawGhostPiece(state) {
         if (!this.isGhostPieceEnabled()) return;
         if (!this.canvasManager.getContext() || !state.piece) return;
@@ -48,12 +35,7 @@ export class GhostPieceRenderer {
         }
     }
 
-    /**
-     * Draws a single ghost cell with transparency
-     * @param {number} x - X coordinate on the board
-     * @param {number} y - Y coordinate on the board
-     * @param {number} v - Piece type value for color
-     */
+    // Draws a single cell of the ghost piece with transparency
     drawGhostCell(x, y, v) {
         const ctx = this.canvasManager.getContext();
         const cellSize = this.canvasManager.getCellSize();

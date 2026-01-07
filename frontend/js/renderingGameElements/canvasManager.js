@@ -1,7 +1,4 @@
-/**
- * CanvasManager handles the initialization and management of HTML5 canvases
- * used for rendering the Tetris game board and piece preview.
- */
+// Manages the main and preview canvases for the Tetris game
 export class CanvasManager {
     constructor() {
         this.canvas = null;
@@ -13,12 +10,7 @@ export class CanvasManager {
         this.ROWS = 20; // Number of rows in the game board
     }
 
-    /**
-     * Initializes the main game canvas and preview canvas
-     * @param {string} mainId - ID of the main game canvas element
-     * @param {string} previewId - ID of the preview canvas element
-     * @param {number} size - Size of each cell in pixels
-     */
+    // Initializes the main and preview canvases
     initCanvas(mainId = 'tetris', previewId = 'preview', size = 36) {
         this.cellSize = size;
         this.canvas = document.getElementById(mainId);
@@ -33,51 +25,34 @@ export class CanvasManager {
         if (this.previewCanvas) this.previewCtx = this.previewCanvas.getContext('2d');
     }
 
-    /**
-     * Clears the main game canvas by filling it with black
-     */
+    // Clears the main canvas by filling it with black
     clear() {
         if (!this.ctx) return;
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    /**
-     * Gets the current cell size
-     * @returns {number} The cell size in pixels
-     */
+    // Gets the size of each cell
     getCellSize() {
         return this.cellSize;
     }
 
-    /**
-     * Gets the 2D rendering context for the main canvas
-     * @returns {CanvasRenderingContext2D} The main canvas context
-     */
+    // Gets the 2D rendering context for the main canvas
     getContext() {
         return this.ctx;
     }
 
-    /**
-     * Gets the 2D rendering context for the preview canvas
-     * @returns {CanvasRenderingContext2D} The preview canvas context
-     */
+    // Gets the 2D rendering context for the preview canvas
     getPreviewContext() {
         return this.previewCtx;
     }
 
-    /**
-     * Gets the main canvas element
-     * @returns {HTMLCanvasElement} The main canvas element
-     */
+    // Gets the main canvas element
     getCanvas() {
         return this.canvas;
     }
 
-    /**
-     * Gets the preview canvas element
-     * @returns {HTMLCanvasElement} The preview canvas element
-     */
+    // Gets the preview canvas element
     getPreviewCanvas() {
         return this.previewCanvas;
     }

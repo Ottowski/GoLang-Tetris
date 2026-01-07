@@ -12,6 +12,7 @@ export async function fetchHighscores() {
     }
 }
 
+// render highscores to DOM
 export function renderHighscores(list) {
     const el = document.getElementById('highscores-list');
     if (!el) return;

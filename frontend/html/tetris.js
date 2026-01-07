@@ -1,4 +1,4 @@
-import initUI from './ui.js';
+import initUI from '../js/ui.js';
 
 // bootstrap UI when the module loads
 console.log('frontend/js/tetris.js loaded');
@@ -27,4 +27,3 @@ document.getElementById('goBackBtn').addEventListener('click', async () => {
     // go back to mainmenu
     window.location.href = '/html/index.html';
 });
-

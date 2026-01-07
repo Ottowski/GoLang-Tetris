@@ -1,22 +1,13 @@
 import { ColorManager } from './colorManager.js';
 
-/**
- * PreviewRenderer handles the rendering of the next piece preview.
- * Shows players what piece will come next to help with planning.
- */
+// Renders the next piece in the preview canvas
 export class PreviewRenderer {
-    /**
-     * Creates a new PreviewRenderer instance
-     * @param {CanvasManager} canvasManager - The canvas manager for the preview canvas
-     */
+    // Initializes the PreviewRenderer with a reference to the CanvasManager
     constructor(canvasManager) {
         this.canvasManager = canvasManager;
     }
 
-    /**
-     * Renders the next piece in the preview canvas
-     * @param {number[]} flatPiece - The next piece as a flat 16-element array
-     */
+    // Renders the given piece in the preview canvas
     drawPreview(flatPiece) {
         const previewCtx = this.canvasManager.getPreviewContext();
         const previewCanvas = this.canvasManager.getPreviewCanvas();

@@ -1,13 +1,6 @@
-/**
- * ColorManager provides color mapping for different Tetris piece types.
- * Each piece type has a unique color for visual distinction.
- */
+// Manages color assignments for different Tetris piece types
 export class ColorManager {
-    /**
-     * Returns the hex color code for a given piece type value
-     * @param {number} v - The piece type value (1-12)
-     * @returns {string} Hex color code for the piece type
-     */
+    // Returns the color associated with a given piece value
     static colorFor(v) {
         switch (v) {
             case 1: return '#00f0f0'; // I-piece (cyan)

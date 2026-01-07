@@ -1,24 +1,11 @@
-/**
- * CollisionDetector handles collision detection logic for Tetris pieces.
- * It determines whether a piece can be placed at a given position on the board.
- */
+// Detects collisions between Tetris pieces and the game board
 export class CollisionDetector {
-    /**
-     * Creates a new CollisionDetector instance
-     * @param {CanvasManager} canvasManager - The canvas manager for board dimensions
-     */
+    // Initializes the CollisionDetector with a reference to the CanvasManager
     constructor(canvasManager) {
         this.canvasManager = canvasManager;
     }
 
-    /**
-     * Checks if a piece would collide with the board boundaries or existing pieces
-     * @param {number[][]} board - The current game board state
-     * @param {number[]} piece - The piece shape as a flat array
-     * @param {number} px - X position of the piece
-     * @param {number} py - Y position of the piece
-     * @returns {boolean} True if collision detected, false otherwise
-     */
+    // Checks if a piece collides with the board or existing pieces
     collides(board, piece, px, py) {
         const COLS = 10; // Board width
         const ROWS = 20; // Board height
