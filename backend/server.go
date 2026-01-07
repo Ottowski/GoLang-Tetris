@@ -36,21 +36,24 @@ type GameState struct {
 
 // Game modes difficlty defenitions
 var BeginnerMode = GameMode{
-	Name:        "Beginner",
-	GhostPiece:  true,
-	NextPreview: true,
-	CanPause:    true,
-	FallSpeed:   1, // 600 ms
+	Name:            "Beginner",
+	GhostPiece:      true,
+	NextPreview:     true,
+	CanPause:        true,
+	FallSpeed:       1, // 600 ms
+	ScoreMultiplier: 1.0,
 }
 
 var ClassicMode = GameMode{
-	Name:        "Classic",
-	GhostPiece:  false,
-	NextPreview: false,
-	CanPause:    false,
-	FallSpeed:   3, // 200 ms
+	Name:            "Classic",
+	GhostPiece:      false,
+	NextPreview:     false,
+	CanPause:        false,
+	FallSpeed:       3,   // 200 ms
+	ScoreMultiplier: 1.5, // 👈 more points
 }
 
+// create a snapshot of the current game state
 func snapshot(g *Game) GameState {
 	g.mutex.Lock()
 	defer g.mutex.Unlock()
@@ -75,6 +78,7 @@ func snapshot(g *Game) GameState {
 		copy(pi, g.Next[i])
 		n[i] = pi
 	}
+	// return snapshot
 	return GameState{
 		Board:    b,
 		Piece:    p,
@@ -109,6 +113,7 @@ func getModeFromSessionOrDefault(r *http.Request) GameMode {
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
+	// upgrade HTTP to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("ws upgrade:", err)
@@ -166,13 +171,13 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				data, _ := json.Marshal(msg)
 				json.Unmarshal(data, &rm)
 
+				// select mode based on message
 				switch rm.Mode {
 				case "classic":
 					selectedMode = ClassicMode
 				case "beginner":
 					selectedMode = BeginnerMode
 				}
-
 				g = newGame(selectedMode)
 				log.Println("Starting game with mode:", g.Mode.Name)
 				createTicker()
@@ -182,6 +187,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
+			// handle other messages
 			g.mutex.Lock()
 			if g.GameOver {
 				g.mutex.Unlock()
@@ -190,6 +196,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 
 			updated := false
 
+			// process control messages
 			switch msg.Type {
 			case "move":
 				if msg.Dir == "left" && !g.collides(g.X-1, g.Y, g.Piece) {

@@ -6,6 +6,7 @@ import (
 	"sync"
 )
 
+// game board dimensions
 const (
 	rows = 20
 	cols = 10
@@ -29,13 +30,15 @@ type Game struct {
 
 // game mode difficulty struct
 type GameMode struct {
-	Name        string `json:"name"`
-	GhostPiece  bool   `json:"ghostPiece"`
-	NextPreview bool   `json:"nextPreview"`
-	CanPause    bool   `json:"canPause"`
-	FallSpeed   int    `json:"fallSpeed"`
+	Name            string  `json:"name"`
+	GhostPiece      bool    `json:"ghostPiece"`
+	NextPreview     bool    `json:"nextPreview"`
+	CanPause        bool    `json:"canPause"`
+	FallSpeed       int     `json:"fallSpeed"`
+	ScoreMultiplier float64 `json:"scoreMultiplier"`
 }
 
+// advance game state by one step
 func (g *Game) step() {
 	g.mutex.Lock()
 	defer g.mutex.Unlock()
@@ -56,6 +59,7 @@ func (g *Game) step() {
 	}
 }
 
+// create a new game instance
 func newGame(mode GameMode) *Game {
 	b := make([][]int, rows)
 	for i := range b {
@@ -105,6 +109,7 @@ func (g *Game) spawn() {
 	g.Y = 0
 }
 
+// check for collision of piece at position (px, py)
 func (g *Game) collides(px, py int, p []int) bool {
 	for y := 0; y < 4; y++ {
 		for x := 0; x < 4; x++ {
@@ -125,6 +130,7 @@ func (g *Game) collides(px, py int, p []int) bool {
 	return false
 }
 
+// lock piece into the board
 func (g *Game) lock() {
 	for y := 0; y < 4; y++ {
 		for x := 0; x < 4; x++ {
@@ -146,10 +152,12 @@ func (g *Game) lock() {
 	}
 }
 
+// clear completed lines and update score
 func (g *Game) clearLines() {
 	newBoard := make([][]int, 0, rows)
 	cleared := 0
 	for y := 0; y < rows; y++ {
+		// check if line is full
 		full := true
 		for x := 0; x < cols; x++ {
 			if g.Board[y][x] == 0 {
@@ -157,6 +165,7 @@ func (g *Game) clearLines() {
 				break
 			}
 		}
+		// if line is not full, keep it
 		if !full {
 			rowCopy := make([]int, cols)
 			copy(rowCopy, g.Board[y])
@@ -165,14 +174,19 @@ func (g *Game) clearLines() {
 			cleared++
 		}
 	}
+	// add empty rows at the top
 	for i := 0; i < cleared; i++ {
 		newRow := make([]int, cols)
 		newBoard = append([][]int{newRow}, newBoard...)
 	}
 	g.Board = newBoard
 	if cleared > 0 {
+		// Base score per cleared line
 		baseScore := cleared * 100
-		multiplier := cleared
-		g.Score += baseScore * multiplier
+		// Line clear bonus (double, triple, tetris etc.)
+		lineMultiplier := cleared
+		// Apply game mode difficulty multiplier
+		total := int(float64(baseScore*lineMultiplier) * g.Mode.ScoreMultiplier)
+		g.Score += total
 	}
 }

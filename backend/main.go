@@ -24,6 +24,7 @@ func main() {
 
 	http.HandleFunc("/highscores", highscoresHandler)
 	http.HandleFunc("/ws", wsHandler)
+	http.HandleFunc("/getGameMode", GetGameMode)
 
 	http.HandleFunc("/restart", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
