@@ -6,9 +6,11 @@ A fully functional Tetris game built with Go backend and JavaScript frontend, pa
 
 On the https://github.com/Ottowski/GoLang-Tetris page, click the green button "<> code", which will allow you to see several download options, but I recommend the "DOWNLOAD ZIP" file option.
 
-After downloading the zip file, open it and place the folder "GoLang-Tetris-main" inside of the zip file, on your desktop. Then you open the folder "GoLang-Tetris-main", there you will see the "tetris-desktop.exe" file furthest down in the folder.
+After downloading the zip file, open it and place the folder "GoLang-Tetris-main" inside of the zip file, on your desktop. 
 
-Simply double-click "tetris-desktop.exe" in the project root folder to launch the game!
+Then you open the folder "GoLang-Tetris-main", there you will see the "tetris-desktop.exe" file furthest down in the folder.
+
+Finally simply double-click "tetris-desktop.exe" in the project root folder to launch the game!
 
 ## Features
 
