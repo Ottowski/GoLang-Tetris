@@ -1,0 +1,91 @@
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
+	"tetris-game/backend/server"
+	"time"
+)
+
+func main() {
+	// serve static frontend
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/" {
+			http.ServeFile(w, r, "frontend/html/index.html")
+			return
+		}
+		http.FileServer(http.Dir("frontend")).ServeHTTP(w, r)
+	})
+
+	loadHighscores()
+
+	// API endpoints
+	http.HandleFunc("/start", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		log.Println("Game started")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	http.HandleFunc("/highscores", highscoresHandler)
+	// instantiate server and register its handlers
+	srv := server.New()
+	srv.RegisterHandlers()
+
+	http.HandleFunc("/restart", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(`{"status":"ok"}`))
+		}
+	})
+
+	http.HandleFunc("/quit", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		log.Println("Game quit")
+		w.WriteHeader(http.StatusOK)
+		os.Exit(0)
+	})
+
+	// Start server in goroutine
+	go func() {
+		log.Println("Server listening on :8081")
+		log.Fatal(http.ListenAndServe(":8081", nil))
+	}()
+
+	// Wait for server to start
+	time.Sleep(100 * time.Millisecond)
+
+	// Find browser
+	browsers := []string{
+		`C:\Program Files\Google\Chrome\Application\chrome.exe`,
+		`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
+		`C:\Program Files\Microsoft\Edge\Application\msedge.exe`,
+		`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`,
+	}
+	var browserPath string
+	for _, path := range browsers {
+		if _, err := os.Stat(path); err == nil {
+			browserPath = path
+			break
+		}
+	}
+	if browserPath == "" {
+		log.Fatal("No compatible browser found. Please install Google Chrome or Microsoft Edge.")
+	}
+
+	// Open browser
+	err := exec.Command(browserPath, "--app=http://localhost:8081/html/index.html").Start()
+	if err != nil {
+		log.Fatal("Error opening browser:", err)
+	}
+
+	// Wait forever
+	select {}
+}

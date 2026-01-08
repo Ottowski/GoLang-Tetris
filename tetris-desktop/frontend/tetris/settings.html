@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tetris – Settings</title>
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+<script type="module" src="settings.js"></script>
+
+<div id="settings">
+    <h1>Settings</h1>
+
+    <label>
+        <input type="radio" name="difficulty" value="beginner">
+            <span></span> Beginner Friendly
+    </label>
+
+    <label>
+        <input type="radio" name="difficulty" value="classic">
+            <span></span> Classic Mode
+    </label>
+
+    <label class="checkbox">
+        <input type="checkbox" id="ghostToggle">
+            <span class="box"></span>
+        Enable GhostPiece
+    </label>
+
+    <label class="checkbox">
+        <input type="checkbox" id="soundToggle">
+            <span class="box"></span>
+        Enable sound
+    </label>
+
+    <label class="checkbox">
+        <input type="checkbox" id="tetrixToggle">
+            <span class="box"></span>
+        Enable Tetrix
+    </label>
+
+    <label class="volume">
+        Sound Volume
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.01">
+    </label>
+
+
+    <button id="goBackBtn">Back to mainmenu</button>
+</div>
+
+<canvas id="tetrixCanvas"></canvas> <!-- for tetrix animation -->
+
+<script type="module" src="./settings.js"></script>
+<script type="module" src="./tetrix.js"></script> <!-- animation -->
+</body>
+</html>

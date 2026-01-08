@@ -1,0 +1,267 @@
+/* Main Modal design */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #111;
+    color: #eee;
+}
+
+#layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+
+#left {
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-start;
+    gap: 20px; 
+}
+
+/* Score-panel design */
+#score-panel {
+    width: 80px;
+    text-align: center;
+}
+
+canvas {
+    border: 2px solid white;
+    background: #000;
+    display: block;
+}
+
+.label {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.hint {
+    color: #bbb;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.score-display {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0f0;
+    font-family: monospace;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #333;
+    background: #000;
+}
+
+/* Game Over Modal */
+.modal {
+    display: none !important;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    background-color: transparent;
+}
+
+.modal.show {
+    display: block !important;
+}
+
+.modal-content {
+    background-color: #222;
+    border: 2px solid #0f0;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8);
+}
+
+.modal-content h2 {
+    margin: 0 0 20px 0;
+    font-size: 36px;
+    color: #0f0;
+}
+
+.modal-content p {
+    font-size: 24px;
+    color: #eee;
+    margin: 0 0 30px 0;
+}
+
+#restartBtn {
+    background-color: #0f0;
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#restartBtn:hover {
+    background-color: #0a0;
+}
+
+
+/* Pause Modal */
+#pauseModal {
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+#pauseModal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background: rgba(0, 0, 0, 0.3); /* semi-transparent overlay */
+    z-index: 9000; /* below game over modal*/
+}
+
+#pauseModal .modal-content {
+    background: rgba(20, 20, 20, 0.7);
+    border: 2px solid #aaa;
+    border-radius: 6px;
+    padding: 20px 35px;
+    text-align: center;
+
+    backdrop-filter: blur(3px); 
+}
+
+#pauseModal .modal-content h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #ddd;
+}
+
+#pauseModal .modal-content p {
+    font-size: 16px;
+    color: #ccc;
+}
+
+
+/* Highscore Modal */
+#highscore-container {
+    margin-top: 20px;
+    padding: 10px;
+    background: #111;
+    border: 2px solid #444;
+    border-radius: 8px;
+}
+
+#highscore-container .label {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: #fff;
+    text-align: center;
+}
+
+#highscores-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;  
+    overflow-y: auto;
+}
+
+#highscores-list li {
+    color: #ccc;
+    font-size: 0.9em;
+    padding: 4px 0;
+    border-bottom: 1px solid #333;
+}
+
+
+/* Instructions */
+
+#instructions {
+    width: 180px;
+    padding: 12px;
+    background: #111;
+    border: 2px solid #333;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+.instructions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instructions-list li {
+    margin-bottom: 8px;
+    color: #ccc;
+}
+#instructions:hover {
+    border-color: #0f0;
+}
+
+
+/* Go back to main menu Button */
+#goBackBtn {
+    width: 220px;
+    padding: 12px;
+    font-size: 18px;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    cursor: pointer;
+}
+
+
+#goBackBtn:hover:not(:disabled) {
+    background: #0f0;
+    color: #000;
+}
+
+
+#goBackBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Tetrix Canvas*/
+
+#tetrixCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    border: none !important;
+    background: transparent;
+}
+
+#layout {
+    position: relative;
+    z-index: 2;
+}
