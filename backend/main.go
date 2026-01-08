@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"tetris-game/backend/server"
 )
 
 func main() {
@@ -23,8 +24,9 @@ func main() {
 	})
 
 	http.HandleFunc("/highscores", highscoresHandler)
-	http.HandleFunc("/ws", wsHandler)
-	http.HandleFunc("/getGameMode", GetGameMode)
+	// instantiate server and register its handlers
+	srv := server.New()
+	srv.RegisterHandlers()
 
 	http.HandleFunc("/restart", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
