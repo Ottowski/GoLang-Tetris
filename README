@@ -2,9 +2,13 @@
 
 A fully functional Tetris game built with Go backend and JavaScript frontend, packaged as a standalone Windows desktop application using Wails.
 
-## Quick Start
+## How to play Quick Start!
 
-Simply double-click `tetris-desktop.exe` in the project root folder to launch the game!
+On the https://github.com/Ottowski/GoLang-Tetris page, click the green button "<> code", which will allow you to see several download options, but I recommend the "DOWNLOAD ZIP" file option.
+
+After downloading the zip file, open it and place the folder "GoLang-Tetris-main" inside of the zip file, on your desktop. Then you open the folder "GoLang-Tetris-main", there you will see the "tetris-desktop.exe" file furthest down in the folder.
+
+Simply double-click "tetris-desktop.exe" in the project root folder to launch the game!
 
 ## Features
 
@@ -54,3 +58,4 @@ Copy-Item "build\bin\tetris-desktop.exe" "..\tetris-desktop.exe" -Force
 - Highscores are stored in a JSON file next to the executable
 - WebSocket connection runs on `ws://localhost:8081/ws`
 - Settings are stored in browser localStorage
+
