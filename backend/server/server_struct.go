@@ -2,9 +2,8 @@ package server
 
 import (
 	"net/http"
-	"time"
-
 	"tetris-game/backend/model"
+	"time"
 
 	"github.com/gorilla/websocket"
 )

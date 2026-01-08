@@ -5,9 +5,8 @@ import (
 	"log"
 	"net/http"
 	"sync"
-	"time"
-
 	"tetris-game/backend/model"
+	"time"
 )
 
 type wsMessage struct {
