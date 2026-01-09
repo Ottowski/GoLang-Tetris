@@ -29,7 +29,7 @@ func New() *Server {
 			GhostPiece:      true,
 			NextPreview:     true,
 			CanPause:        true,
-			FallSpeed:       1,
+			FallSpeed:       4,
 			ScoreMultiplier: 1.0,
 		},
 		ClassicMode: model.GameMode{
@@ -37,10 +37,10 @@ func New() *Server {
 			GhostPiece:      false,
 			NextPreview:     false,
 			CanPause:        false,
-			FallSpeed:       3,
-			ScoreMultiplier: 1.5,
+			FallSpeed:       6,
+			ScoreMultiplier: 2.0,
 		},
-		BaseSpeed: 600 * time.Millisecond,
+		BaseSpeed: 100 * time.Millisecond,
 	}
 	return s
 }
