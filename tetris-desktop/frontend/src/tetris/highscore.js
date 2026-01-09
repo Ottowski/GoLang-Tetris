@@ -17,6 +17,13 @@ export function renderHighscores(list) {
     const el = document.getElementById('highscores-list');
     if (!el) return;
     el.innerHTML = '';
+    if (!list || list.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No highscores yet!';
+        li.style.color = '#888';
+        el.appendChild(li);
+        return;
+    }
     (list || []).forEach((entry) => {
         const li = document.createElement('li');
         const when = new Date(entry.when).toLocaleDateString();
