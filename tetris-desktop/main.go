@@ -235,8 +235,8 @@ func main() {
 	// Create application with options
 	err = wails.Run(&options.App{
 		Title:  "tetris-desktop",
-		Width:  1024,
-		Height: 768,
+		Width:  1280,
+		Height: 900,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
