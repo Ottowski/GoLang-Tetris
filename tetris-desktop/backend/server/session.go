@@ -68,11 +68,12 @@ func (s *Server) WSHandler(w http.ResponseWriter, r *http.Request) {
 
 			switch msg.Type {
 			case "move":
-				if msg.Dir == "left" {
+				switch msg.Dir {
+				case "left":
 					updated = g.MoveLeft()
-				} else if msg.Dir == "right" {
+				case "right":
 					updated = g.MoveRight()
-				} else if msg.Dir == "down" {
+				case "down":
 					updated = g.MoveDown()
 				}
 			case "rotate":

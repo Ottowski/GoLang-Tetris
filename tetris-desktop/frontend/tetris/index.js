@@ -2,6 +2,7 @@
 function initMenu() {
     const startBtn = document.getElementById('startBtn');
     const settingsBtn = document.getElementById('settingsBtn');
+    const quitBtn = document.getElementById('quitBtn');
 
     if (startBtn) {
         startBtn.addEventListener('click', async () => {
@@ -26,6 +27,12 @@ function initMenu() {
             window.location.href = 'settings.html';
         });
     }
+
+    if (quitBtn) {
+        quitBtn.addEventListener('click', () => {
+            window.runtime.Quit();
+        });
+    }
 }
 
 // Run when DOM is ready
@@ -34,11 +41,3 @@ if (document.readyState === 'loading') {
 } else {
     initMenu();
 }
-
-/*document.getElementById('difficultyBtn').addEventListener('click', async () => {
-    
-    await fetch('/difficulty', { method: 'POST' });
-
-    // go to difficulty selection
-    window.location.href = '/difficulty.html';
-});*/
