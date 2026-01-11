@@ -23,12 +23,14 @@ func NewGame(mode GameMode) *Game {
 	return g
 }
 
+// spawn places a new piece onto the board
 func (g *Game) spawn() {
 	if len(g.Next) == 0 {
 		id := rand.Intn(len(Tetrominoes))
 		g.Piece = Flatten(Tetrominoes[id])
 		g.PieceID = id + 1
 	} else {
+		// take first from next queue
 		g.Piece = make([]int, 16)
 		copy(g.Piece, g.Next[0])
 		pid := 0
@@ -38,15 +40,19 @@ func (g *Game) spawn() {
 				break
 			}
 		}
+		// set piece ID
 		g.PieceID = pid
 		if len(g.Next) > 1 {
 			g.Next = append(g.Next[:0], g.Next[1:]...)
 		} else {
 			g.Next = g.Next[:0]
 		}
+		// add new piece to queue
 		id := rand.Intn(len(Tetrominoes))
 		g.Next = append(g.Next, Flatten(Tetrominoes[id]))
 	}
+	// center piece
 	g.X = (Cols / 2) - 2
+	// start above the board
 	g.Y = -1
 }
