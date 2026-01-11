@@ -48,5 +48,5 @@ func (g *Game) spawn() {
 		g.Next = append(g.Next, Flatten(Tetrominoes[id]))
 	}
 	g.X = (Cols / 2) - 2
-	g.Y = 0
+	g.Y = -1
 }
