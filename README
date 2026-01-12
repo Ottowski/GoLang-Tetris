@@ -37,16 +37,6 @@ Finally simply double-click "tetris-desktop.exe" in the project root folder to l
 - Easy close button to quit
 - Back buttons for navigation
 
-## How to Build
-
-If you modify the code and want to rebuild:
-
-```powershell
-cd C:\Users\ottoa\OneDrive\Skrivbord\GoLang-Tetris\tetris-desktop
-wails build
-Copy-Item "build\bin\tetris-desktop.exe" "..\tetris-desktop.exe" -Force
-```
-
 ## Technical Details
 
 - **Backend**: Go 1.x with HTTP server on port 8081
@@ -60,4 +50,5 @@ Copy-Item "build\bin\tetris-desktop.exe" "..\tetris-desktop.exe" -Force
 - Highscores are stored in a JSON file next to the executable
 - WebSocket connection runs on `ws://localhost:8081/ws`
 - Settings are stored in browser localStorage
+
 
