@@ -34,6 +34,12 @@
     </label>
 
     <label class="checkbox">
+        <input type="checkbox" id="musicToggle">
+            <span class="box"></span>
+        Enable background music
+    </label>
+
+    <label class="checkbox">
         <input type="checkbox" id="tetrixToggle">
             <span class="box"></span>
         Enable Tetrix animation (Matrix style)
@@ -42,6 +48,12 @@
     <label class="volume">
         Sound effect volume
         <input type="range" id="volumeSlider" min="0" max="1" step="0.01">
+    </label>
+
+    <label class="volume">
+        Background music volume
+        <input type="range" id="musicVolumeSlider" min="0" max="1" step="0.01">
+        <span id="musicVolumeDisplay">50%</span>
     </label>
 
 

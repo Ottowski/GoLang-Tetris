@@ -22,6 +22,9 @@ export class GameController {
         this.setupWebSocket();
         this.fetchInitialState();
         console.log('[GameController] WebSocket setup and initial state fetch initiated');
+        
+        // Start background music
+        soundManager.startBackgroundMusic();
     }
     
     // Setup WebSocket connection
@@ -64,6 +67,7 @@ export class GameController {
         // Detect game over transition
         if (state.gameOver && !this.wasGameOver) {
             soundManager.playGameOver();
+            soundManager.stopBackgroundMusic(); // Stop music when game is over
             this.wasGameOver = true;
 
             // Display final score for the submit modal
@@ -87,8 +91,10 @@ export class GameController {
         // Detect if game paused or resumed
         this.isPaused = state.paused;
         if (state.paused) {
+            soundManager.pauseBackgroundMusic(); // Pause music when game is paused
             console.log("Game paused");
         } else {
+            soundManager.resumeBackgroundMusic(); // Resume music when game resumes
             console.log("Game resumed");
         }
     }
@@ -125,6 +131,9 @@ export class GameController {
 
     // Restart the game
     restartGame() {
+        
+        // Restart background music when game restarts
+        soundManager.startBackgroundMusic();
         this.wasGameOver = false;
         this.lastScore = 0;
         this.sendControlMessage({ type: 'restart', mode: this.mode });

@@ -106,9 +106,17 @@ h1 {
 }
 
 /* Slider styling */
-#volumeSlider {
+#volumeSlider,
+#musicVolumeSlider {
     width: 200px;
     accent-color: #0f0;
+}
+/* Volume display procent */
+#musicVolumeDisplay {
+    pointer-events: none;
+    user-select: none;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 /* Tetrix Canvas */

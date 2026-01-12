@@ -6,7 +6,10 @@ function initSettings() {
     const tetrixToggle = document.getElementById('tetrixToggle');
     const ghostToggle = document.getElementById('ghostToggle');
     const soundToggle = document.getElementById('soundToggle');
+    const musicToggle = document.getElementById('musicToggle');
     const volumeSlider = document.getElementById('volumeSlider');
+    const musicVolumeSlider = document.getElementById('musicVolumeSlider');
+    const musicVolumeDisplay = document.getElementById('musicVolumeDisplay');
     const goBackBtn = document.getElementById('goBackBtn');
     const difficultyRadios = document.querySelectorAll('input[name="difficulty"]');
     const savedMode = localStorage.getItem('gameMode') || 'beginner';
@@ -37,7 +40,14 @@ function initSettings() {
     if (ghostToggle) ghostToggle.checked = saved === '1';
 
     if (soundToggle) soundToggle.checked = soundManager.enabled;
+    if (musicToggle) musicToggle.checked = soundManager.musicEnabled;
     if (volumeSlider) volumeSlider.value = soundManager.getVolume();
+    if (musicVolumeSlider) {
+        musicVolumeSlider.value = soundManager.getMusicVolume();
+        if (musicVolumeDisplay) {
+            musicVolumeDisplay.textContent = Math.round(soundManager.getMusicVolume() * 100) + '%';
+        }
+    }
 
     const tetrixSaved = localStorage.getItem('tetrixEnabled');
     if (tetrixToggle) tetrixToggle.checked = tetrixSaved !== '0';
@@ -70,10 +80,28 @@ function initSettings() {
         });
     }
 
+    // Toggle background music
+    if (musicToggle) {
+        musicToggle.addEventListener('change', () => {
+            soundManager.toggleMusic();
+        });
+    }
+
     // Change volume
     if (volumeSlider) {
         volumeSlider.addEventListener('input', (e) => {
             soundManager.setVolume(e.target.value);
+        });
+    }
+
+    // Change music volume
+    if (musicVolumeSlider) {
+        musicVolumeSlider.addEventListener('input', (e) => {
+            const vol = e.target.value;
+            soundManager.setMusicVolume(vol);
+            if (musicVolumeDisplay) {
+                musicVolumeDisplay.textContent = Math.round(vol * 100) + '%';
+            }
         });
     }
 
