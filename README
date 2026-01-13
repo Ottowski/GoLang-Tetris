@@ -8,9 +8,9 @@ On the https://github.com/Ottowski/GoLang-Tetris page, click the green button "<
 
 After downloading the zip file, open it and place the folder "GoLang-Tetris-main" inside of the zip file, on your desktop. 
 
-Then you open the folder "GoLang-Tetris-main", there you will see the "tetris-desktop.exe" file furthest down in the folder.
+Then you open the folder "GoLang-Tetris-main", there you will see the "tetris-desktop.exe" file furthest down, a the start of the folder.
 
-Finally simply double-click "tetris-desktop.exe" in the project root folder to launch the game!
+Finally, just simply double-click "tetris-desktop.exe" file in the project root folder to launch the game!
 
 ## Features
 
@@ -50,5 +50,6 @@ Finally simply double-click "tetris-desktop.exe" in the project root folder to l
 - Highscores are stored in a JSON file next to the executable
 - WebSocket connection runs on `ws://localhost:8081/ws`
 - Settings are stored in browser localStorage
+
 
 
