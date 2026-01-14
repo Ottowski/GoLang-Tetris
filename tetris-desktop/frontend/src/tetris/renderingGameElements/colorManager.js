@@ -3,18 +3,18 @@ export class ColorManager {
     // Returns the color associated with a given piece value
     static colorFor(v) {
         switch (v) {
-            case 1: return '#00f0f0'; // I-piece (cyan)
-            case 2: return '#f0f000'; // O-piece (yellow)
-            case 3: return '#a000f0'; // T-piece (purple)
-            case 4: return '#00f000'; // S-piece (green)
-            case 5: return '#f00000'; // Z-piece (red)
-            case 6: return '#0000f0'; // J-piece (blue)
-            case 7: return '#f08000'; // L-piece (orange)
+            case 1: return '#00d4d4'; // I-piece (bright cyan)
+            case 2: return '#f0c000'; // O-piece (golden yellow)
+            case 3: return '#b030f0'; // T-piece (vibrant purple)
+            case 4: return '#00d400'; // S-piece (bright green)
+            case 5: return '#f03030'; // Z-piece (bright red)
+            case 6: return '#3050f0'; // J-piece (bright blue)
+            case 7: return '#f08820'; // L-piece (vibrant orange)
             case 8: return '#ff69b4'; // Special piece (hot pink)
-            case 9: return '#00f000'; // Additional green variant
-            case 10: return '#f0f000'; // Additional yellow variant
-            case 11: return '#0000f0'; // Additional blue variant
-            case 12: return '#f00000'; // Additional red variant
+            case 9: return '#00d400'; // Additional green variant
+            case 10: return '#f0c000'; // Additional yellow variant
+            case 11: return '#3050f0'; // Additional blue variant
+            case 12: return '#f03030'; // Additional red variant
             default: return '#666'; // Default gray for unknown pieces
         }
     }
