@@ -47,10 +47,41 @@ func (g *Game) Rotate() bool {
 		return false
 	}
 	rotated := RotatePiece(g.Piece)
+
+	// Try rotation at current position
 	if !g.collides(g.X, g.Y, rotated) {
 		g.Piece = rotated
 		return true
 	}
+
+	// Wall kick: try shifting right
+	if !g.collides(g.X+1, g.Y, rotated) {
+		g.X++
+		g.Piece = rotated
+		return true
+	}
+
+	// Wall kick: try shifting left
+	if !g.collides(g.X-1, g.Y, rotated) {
+		g.X--
+		g.Piece = rotated
+		return true
+	}
+
+	// Wall kick: try shifting right by 2 (for I-piece)
+	if !g.collides(g.X+2, g.Y, rotated) {
+		g.X += 2
+		g.Piece = rotated
+		return true
+	}
+
+	// Wall kick: try shifting left by 2 (for I-piece)
+	if !g.collides(g.X-2, g.Y, rotated) {
+		g.X -= 2
+		g.Piece = rotated
+		return true
+	}
+
 	return false
 }
 

@@ -24,10 +24,10 @@ export function renderHighscores(list) {
         el.appendChild(li);
         return;
     }
-    (list || []).forEach((entry) => {
+    (list || []).forEach((entry, index) => {
         const li = document.createElement('li');
         const when = new Date(entry.when).toLocaleDateString();
-        li.textContent = `${entry.name} — ${entry.score}`;
+        li.textContent = `${index + 1}. ${entry.name} — ${entry.score}`;
         el.appendChild(li);
     });
 }
