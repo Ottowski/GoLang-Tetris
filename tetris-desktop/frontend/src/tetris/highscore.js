@@ -18,16 +18,59 @@ export function renderHighscores(list) {
     if (!el) return;
     el.innerHTML = '';
     if (!list || list.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'No highscores yet!';
-        li.style.color = '#888';
-        el.appendChild(li);
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'highscore-empty';
+        emptyMsg.textContent = 'No highscores yet. Be the first!';
+        el.appendChild(emptyMsg);
         return;
     }
     (list || []).forEach((entry, index) => {
         const li = document.createElement('li');
-        const when = new Date(entry.when).toLocaleDateString();
-        li.textContent = `${index + 1}. ${entry.name} — ${entry.score}`;
+        li.className = 'highscore-entry';
+        
+        // Add ranking badge for top 3
+        const rankBadge = document.createElement('span');
+        rankBadge.className = 'rank-badge';
+        if (index === 0) {
+            rankBadge.classList.add('rank-gold');
+            rankBadge.textContent = '🥇';
+        } else if (index === 1) {
+            rankBadge.classList.add('rank-silver');
+            rankBadge.textContent = '🥈';
+        } else if (index === 2) {
+            rankBadge.classList.add('rank-bronze');
+            rankBadge.textContent = '🥉';
+        } else {
+            rankBadge.textContent = `${index + 1}.`;
+        }
+        
+        // Create entry content
+        const entryContent = document.createElement('div');
+        entryContent.className = 'entry-content';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'entry-name';
+        nameSpan.textContent = entry.name;
+        
+        const scoreSpan = document.createElement('span');
+        scoreSpan.className = 'entry-score';
+        scoreSpan.textContent = entry.score.toLocaleString();
+        
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'entry-date';
+        const when = new Date(entry.when).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        dateSpan.textContent = when;
+        
+        entryContent.appendChild(nameSpan);
+        entryContent.appendChild(scoreSpan);
+        entryContent.appendChild(dateSpan);
+        
+        li.appendChild(rankBadge);
+        li.appendChild(entryContent);
         el.appendChild(li);
     });
 }
